@@ -7,43 +7,63 @@
     <!-- Add Flatpickr CSS and JS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <!-- Add SortableJS for reordering -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .subject { margin-bottom: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; cursor: move; }
+        .subject input { margin-right: 10px; }
+        .required::after { content: " *"; color: red; }
+        .totals { font-weight: bold; margin-top: 10px; }
+        .warning { color: orange; }
+        .error { color: red; }
+        button { margin: 5px; padding: 5px 10px; }
+        #subjects-container { min-height: 50px; }
+    </style>
 </head>
 <body>
     <h1>Study Planner</h1>
     <p>This is powered by AI</p>
     
     <h2>Daily Activities (in hours)</h2>
-    <label for="sleep">Sleep:</label>
-    <input type="number" id="sleep" name="sleep" min="0" max="24" step="0.5">
+    <label for="sleep" class="required">Sleep:</label>
+    <input type="number" id="sleep" name="sleep" min="0" max="24" step="0.5" placeholder="e.g., 8">
     <br><br>
-    <label for="eating">Eating:</label>
-    <input type="number" id="eating" name="eating" min="0" max="24" step="0.5">
+    <label for="eating" class="required">Eating:</label>
+    <input type="number" id="eating" name="eating" min="0" max="24" step="0.5" placeholder="e.g., 2">
     <br><br>
-    <label for="other">Other daily activities (e.g., commuting, exercise):</label>
-    <input type="number" id="other" name="other" min="0" max="24" step="0.5">
+    <label for="other" class="required">Other daily activities (e.g., commuting, exercise):</label>
+    <input type="number" id="other" name="other" min="0" max="24" step="0.5" placeholder="e.g., 1">
     <br><br>
     
-    <h2>Subjects</h2>
+    <h2>Subjects (Drag to reorder)</h2>
     <div id="subjects-container">
         <div class="subject">
-            <label>Subject Name:</label>
+            <label class="required">Subject Name:</label>
             <input type="text" class="subject-name" placeholder="e.g., Math">
-            <label>Strength (1-10):</label>
-            <input type="number" class="subject-strength" min="1" max="10">
-            <label>Target Marks (1-10):</label>
-            <input type="number" class="subject-marks" min="1" max="10">
+            <label class="required">Strength (1-10):</label>
+            <input type="number" class="subject-strength" min="1" max="10" placeholder="1-10">
+            <label class="required">Target Marks (1-10):</label>
+            <input type="number" class="subject-marks" min="1" max="10" placeholder="1-10">
+            <button class="delete-subject">Delete</button>
         </div>
     </div>
     <button id="add-subject">Add Another Subject</button>
     <br><br>
     
     <h2>Study Session</h2>
-    <label for="start-datetime">Starting Date and Time:</label>
+    <label for="start-datetime" class="required">Starting Date and Time:</label>
     <input type="text" id="start-datetime" name="start-datetime" placeholder="Select start date and time">
     <br><br>
     
-    <label for="end-datetime">Ending Date and Time:</label>
+    <label for="end-datetime" class="required">Ending Date and Time:</label>
     <input type="text" id="end-datetime" name="end-datetime" placeholder="Select end date and time">
+    <br><br>
+    
+    <label for="study-interval">Study Interval (minutes):</label>
+    <input type="number" id="study-interval" name="study-interval" min="1" placeholder="25" value="25">
+    <label for="break-interval">Break Interval (minutes):</label>
+    <input type="number" id="break-interval" name="break-interval" min="1" placeholder="5" value="5">
     <br><br>
     
     <button id="generate-plan">Generate Study Plan</button>
@@ -51,12 +71,18 @@
     <div id="study-plan-output"></div>
 
 <script>
+    let startDate = null;
+    let endDate = null;
+
     // Initialize Flatpickr for start datetime
     flatpickr("#start-datetime", {
         enableTime: true,
         dateFormat: "Y-m-d H:i",
         time_24hr: false,
-        minuteIncrement: 1
+        minuteIncrement: 1,
+        onChange: function(selectedDates, dateStr, instance) {
+            startDate = selectedDates[0];
+        }
     });
 
     // Initialize Flatpickr for end datetime
@@ -64,7 +90,16 @@
         enableTime: true,
         dateFormat: "Y-m-d H:i",
         time_24hr: false,
-        minuteIncrement: 1
+        minuteIncrement: 1,
+        onChange: function(selectedDates, dateStr, instance) {
+            endDate = selectedDates[0];
+        }
+    });
+
+    // Make subjects sortable
+    new Sortable(document.getElementById('subjects-container'), {
+        animation: 150,
+        handle: '.subject'
     });
 
     // Add subject functionality
@@ -73,24 +108,32 @@
         const subjectDiv = document.createElement('div');
         subjectDiv.className = 'subject';
         subjectDiv.innerHTML = `
-            <label>Subject Name:</label>
+            <label class="required">Subject Name:</label>
             <input type="text" class="subject-name" placeholder="e.g., Math">
-            <label>Strength (1-10):</label>
-            <input type="number" class="subject-strength" min="1" max="10">
-            <label>Target Marks (1-10):</label>
-            <input type="number" class="subject-marks" min="1" max="10">
+            <label class="required">Strength (1-10):</label>
+            <input type="number" class="subject-strength" min="1" max="10" placeholder="1-10">
+            <label class="required">Target Marks (1-10):</label>
+            <input type="number" class="subject-marks" min="1" max="10" placeholder="1-10">
+            <button class="delete-subject">Delete</button>
         `;
         container.appendChild(subjectDiv);
+    });
+
+    // Delete subject functionality
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('delete-subject')) {
+            e.target.parentElement.remove();
+        }
     });
 
     document.getElementById('generate-plan').addEventListener('click', function() {
         const sleep = parseFloat(document.getElementById('sleep').value) || 0;
         const eating = parseFloat(document.getElementById('eating').value) || 0;
         const other = parseFloat(document.getElementById('other').value) || 0;
-        const startDateTime = document.getElementById('start-datetime').value;
-        const endDateTime = document.getElementById('end-datetime').value;
+        const studyInterval = parseInt(document.getElementById('study-interval').value) || 25;
+        const breakInterval = parseInt(document.getElementById('break-interval').value) || 5;
 
-        // Collect subjects
+        // Collect subjects in order
         const subjects = [];
         document.querySelectorAll('.subject').forEach(sub => {
             const name = sub.querySelector('.subject-name').value.trim();
@@ -102,35 +145,28 @@
         });
 
         // Validations
-        if (sleep + eating + other >= 24) {
-            alert('Total daily activities cannot exceed 24 hours');
-            return;
-        }
-        if (subjects.length === 0) {
-            alert('Please add at least one subject');
-            return;
-        }
-        if (!startDateTime || !endDateTime) {
-            alert('Please fill in the session start and end times');
-            return;
-        }
-
-        const start = new Date(startDateTime);
-        const end = new Date(endDateTime);
-        if (isNaN(start.getTime()) || isNaN(end.getTime()) || end <= start) {
-            alert('Invalid session times');
-            return;
-        }
-
-        // Calculate available study time per day (assuming 24 hours)
+        let errors = [];
+        if (sleep + eating + other >= 24) errors.push('Total daily activities cannot exceed 24 hours.');
+        if (subjects.length === 0) errors.push('Please add at least one subject.');
+        if (!startDate || !endDate) errors.push('Please fill in the session start and end times.');
+        if (endDate <= startDate) errors.push('End time must be after start time.');
         const availableStudyTime = 24 - sleep - eating - other;
+        if (availableStudyTime <= 0) errors.push('Available study time must be positive.');
+        if (errors.length > 0) {
+            document.getElementById('study-plan-output').innerHTML = `<div class="error">${errors.join('<br>')}</div>`;
+            return;
+        }
 
-        // Calculate weights using unitary method: need = (11 - strength) * marks
+        // Calculate weights
         let totalNeed = 0;
         subjects.forEach(sub => {
             sub.need = (11 - sub.strength) * sub.marks;
             totalNeed += sub.need;
         });
+        if (totalNeed === 0) {
+            document.getElementById('study-plan-output').innerHTML = `<div class="error">Total need cannot be zero; adjust strengths or marks.</div>`;
+            return;
+        }
 
         // Allocate time per subject per day
         subjects.forEach(sub => {
@@ -138,33 +174,49 @@
         });
 
         // Session duration in minutes
-        const sessionMinutes = (end - start) / (1000 * 60);
-
-        // For concentration: intervals based on strength (lower strength = shorter intervals)
-        // E.g., strength 10: 60 min, strength 1: 15 min
-        subjects.forEach(sub => {
-            sub.intervalMinutes = Math.max(15, 60 - (sub.strength - 1) * 5);
-        });
+        const sessionMinutes = (endDate - startDate) / (1000 * 60);
 
         // Generate plan HTML
         let planHTML = `<h2>Daily Study Allocation</h2>`;
         planHTML += `<p>Available study time per day: ${availableStudyTime.toFixed(1)} hours</p>`;
+        let totalAllocated = 0;
         subjects.forEach(sub => {
-            planHTML += `<p><strong>${sub.name}</strong>: ${sub.dailyTime.toFixed(1)} hours/day, Study intervals: ${sub.intervalMinutes} minutes</p>`;
+            planHTML += `<p><strong>${sub.name}</strong>: ${sub.dailyTime.toFixed(1)} hours/day</p>`;
+            totalAllocated += sub.dailyTime;
         });
+        planHTML += `<div class="totals">Total Allocated: ${totalAllocated.toFixed(1)} hours</div>`;
+        if (Math.abs(totalAllocated - availableStudyTime) > 0.01) {
+            planHTML += `<div class="warning">Warning: Rounding may cause small gaps in schedule (difference: ${(availableStudyTime - totalAllocated).toFixed(2)} hours).</div>`;
+        }
 
-        planHTML += `<h2>Session Plan (${start.toLocaleString()} - ${end.toLocaleString()})</h2>`;
-        let currentTime = new Date(start);
-        subjects.forEach(sub => {
-            const subTime = (sub.dailyTime / availableStudyTime) * sessionMinutes; // Proportional to session
-            const intervals = Math.floor(subTime / sub.intervalMinutes);
-            for (let i = 0; i < intervals; i++) {
-                const intervalEnd = new Date(currentTime.getTime() + sub.intervalMinutes * 60000);
-                planHTML += `<p><strong>${sub.name} Interval ${i+1}</strong>: ${currentTime.toLocaleTimeString()} - ${intervalEnd.toLocaleTimeString()}</p>`;
-                currentTime = intervalEnd;
-                if (currentTime >= end) break;
+        // Session plan: Round-robin allocation
+        planHTML += `<h2>Session Plan (${startDate.toISOString().slice(0, 16)} - ${endDate.toISOString().slice(0, 16)})</h2>`;
+        let currentTime = new Date(startDate);
+        let subjectIndex = 0;
+        let totalSessionTime = 0;
+        while (currentTime < endDate && totalSessionTime < sessionMinutes) {
+            const sub = subjects[subjectIndex % subjects.length];
+            const subTime = (sub.dailyTime / availableStudyTime) * sessionMinutes;
+            const intervalMinutes = Math.min(studyInterval, subTime - (totalSessionTime % subTime), sessionMinutes - totalSessionTime);
+            if (intervalMinutes <= 0) break;
+            const intervalEnd = new Date(currentTime.getTime() + intervalMinutes * 60000);
+            planHTML += `<p><strong>${sub.name} Study</strong>: ${currentTime.toISOString().slice(0, 16)} - ${intervalEnd.toISOString().slice(0, 16)}</p>`;
+            currentTime = intervalEnd;
+            totalSessionTime += intervalMinutes;
+            // Add break if not the last interval and time allows
+            if (totalSessionTime < sessionMinutes && currentTime < endDate) {
+                const breakEnd = new Date(currentTime.getTime() + breakInterval * 60000);
+                if (breakEnd <= endDate) {
+                    planHTML += `<p><em>Break</em>: ${currentTime.toISOString().slice(0, 16)} - ${breakEnd.toISOString().slice(0, 16)}</p>`;
+                    currentTime = breakEnd;
+                    totalSessionTime += breakInterval;
+                }
             }
-        });
+            subjectIndex++;
+        }
+        if (totalSessionTime < sessionMinutes) {
+            planHTML += `<div class="warning">Warning: Session ended early due to time constraints.</div>`;
+        }
 
         document.getElementById('study-plan-output').innerHTML = planHTML;
     });
