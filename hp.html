@@ -19,6 +19,8 @@
         .error { color: red; }
         button { margin: 5px; padding: 5px 10px; }
         #subjects-container { min-height: 50px; }
+        .typing { animation: blink 1s infinite; }
+        @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
     </style>
 </head>
 <body>
@@ -26,14 +28,34 @@
     <p>This is powered by AI</p>
     
     <h2>Daily Activities (in hours)</h2>
-    <label for="sleep" class="required">Sleep:</label>
+    <label for="sleep-start" class="required">Sleep Start Time:</label>
+    <input type="text" id="sleep-start" name="sleep-start" placeholder="Select sleep start time">
+    <br><br>
+    <label for="sleep" class="required">Sleep Hours:</label>
     <input type="number" id="sleep" name="sleep" min="0" max="24" step="0.5" placeholder="e.g., 8">
+    <br><br>
+    <label for="wake-up">Wake Up Time:</label>
+    <span id="wake-up-display"></span>
     <br><br>
     <label for="eating" class="required">Eating:</label>
     <input type="number" id="eating" name="eating" min="0" max="24" step="0.5" placeholder="e.g., 2">
     <br><br>
     <label for="other" class="required">Other daily activities (e.g., commuting, exercise):</label>
     <input type="number" id="other" name="other" min="0" max="24" step="0.5" placeholder="e.g., 1">
+    <br><br>
+    
+    <h2>Meal Times</h2>
+    <label for="breakfast" class="required">Breakfast Time:</label>
+    <input type="text" id="breakfast" name="breakfast" placeholder="Select breakfast time">
+    <br><br>
+    <label for="lunch" class="required">Lunch Time:</label>
+    <input type="text" id="lunch" name="lunch" placeholder="Select lunch time">
+    <br><br>
+    <label for="dinner" class="required">Dinner Time:</label>
+    <input type="text" id="dinner" name="dinner" placeholder="Select dinner time">
+    <br><br>
+    <label for="snacks">Mid-break Snacks Time:</label>
+    <input type="text" id="snacks" name="snacks" placeholder="Select snacks time">
     <br><br>
     
     <h2>Subjects (Drag to reorder)</h2>
@@ -73,6 +95,11 @@
 <script>
     let startDate = null;
     let endDate = null;
+    let sleepStart = null;
+    let breakfastTime = null;
+    let lunchTime = null;
+    let dinnerTime = null;
+    let snacksTime = null;
 
     // Initialize Flatpickr for start datetime
     flatpickr("#start-datetime", {
@@ -95,6 +122,71 @@
             endDate = selectedDates[0];
         }
     });
+
+    // Initialize Flatpickr for sleep start
+    flatpickr("#sleep-start", {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: false,
+        onChange: function(selectedDates, dateStr, instance) {
+            sleepStart = selectedDates[0];
+            calculateWakeUp();
+        }
+    });
+
+    // Initialize Flatpickr for meals
+    flatpickr("#breakfast", {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: false,
+        onChange: function(selectedDates, dateStr, instance) {
+            breakfastTime = selectedDates[0];
+        }
+    });
+
+    flatpickr("#lunch", {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: false,
+        onChange: function(selectedDates, dateStr, instance) {
+            lunchTime = selectedDates[0];
+        }
+    });
+
+    flatpickr("#dinner", {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: false,
+        onChange: function(selectedDates, dateStr, instance) {
+            dinnerTime = selectedDates[0];
+        }
+    });
+
+    flatpickr("#snacks", {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: false,
+        onChange: function(selectedDates, dateStr, instance) {
+            snacksTime = selectedDates[0];
+        }
+    });
+
+    // Function to calculate wake up time
+    function calculateWakeUp() {
+        if (sleepStart && document.getElementById('sleep').value) {
+            const sleepHours = parseFloat(document.getElementById('sleep').value);
+            const wakeUp = new Date(sleepStart.getTime() + sleepHours * 3600000);
+            document.getElementById('wake-up-display').textContent = wakeUp.toTimeString().slice(0,5);
+        }
+    }
+
+    // Recalculate wake up on sleep hours change
+    document.getElementById('sleep').addEventListener('input', calculateWakeUp);
 
     // Make subjects sortable
     new Sortable(document.getElementById('subjects-container'), {
@@ -218,7 +310,10 @@
             planHTML += `<div class="warning">Warning: Session ended early due to time constraints.</div>`;
         }
 
-        document.getElementById('study-plan-output').innerHTML = planHTML;
+        document.getElementById('study-plan-output').innerHTML = 'Chatbot is typing<span class="typing">...</span>';
+        setTimeout(() => {
+            document.getElementById('study-plan-output').innerHTML = planHTML;
+        }, 2000);
     });
 </script>
 
