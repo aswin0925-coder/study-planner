@@ -286,7 +286,13 @@
         let currentTime = new Date(startDate);
         let subjectIndex = 0;
         let totalSessionTime = 0;
+        let currentDay = null;
         while (currentTime < endDate && totalSessionTime < sessionMinutes) {
+            const dayStr = currentTime.toDateString();
+            if (dayStr !== currentDay) {
+                planHTML += `<h3>Module for ${dayStr}</h3>`;
+                currentDay = dayStr;
+            }
             const sub = subjects[subjectIndex % subjects.length];
             const subTime = (sub.dailyTime / availableStudyTime) * sessionMinutes;
             const intervalMinutes = Math.min(studyInterval, subTime - (totalSessionTime % subTime), sessionMinutes - totalSessionTime);
