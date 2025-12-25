@@ -71,6 +71,39 @@
             margin-right: 10px;
             color: #667eea;
         }
+        .flow-steps {
+            position: relative;
+        }
+        .flow-step {
+            position: relative;
+            padding-left: 60px;
+            margin-bottom: 30px;
+        }
+        .flow-step::before {
+            content: attr(data-step);
+            position: absolute;
+            left: 0;
+            top: 18px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        .flow-step:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            left: 18px;
+            top: 56px;
+            width: 2px;
+            height: calc(100% - 10px);
+            background: linear-gradient(180deg, rgba(102,126,234,0.8), rgba(118,75,162,0.2));
+        }
         .form-group {
             margin-bottom: 20px;
         }
@@ -228,6 +261,15 @@
             h1 {
                 font-size: 2em;
             }
+            .flow-step {
+                padding-left: 46px;
+            }
+            .flow-step::before {
+                left: 4px;
+            }
+            .flow-step:not(:last-child)::after {
+                left: 22px;
+            }
             .input-group {
                 flex-direction: column;
             }
@@ -243,111 +285,358 @@
         <h1><i class="fas fa-brain"></i> Study Planner</h1>
         <p class="subtitle">Powered by AI <i class="fas fa-robot"></i></p>
 
-        <div class="section">
-            <h2><i class="fas fa-clock"></i> Daily Activities (in hours)</h2>
-            <div class="form-group">
-                <label for="sleep-start" class="required"><i class="fas fa-moon"></i> Sleep Start Time:</label>
-                <input type="text" id="sleep-start" name="sleep-start" placeholder="Select sleep start time">
+        <div class="flow-steps">
+            <div class="section flow-step" data-step="1">
+                <h2><i class="fas fa-search"></i> Quick Learning Resources</h2>
+                <div class="form-group">
+                    <label for="learning-topic"><i class="fas fa-book"></i> What do you want to learn?</label>
+                    <input type="text" id="learning-topic" placeholder="Enter a topic (e.g., Python programming, World War II, Algebra)">
+                </div>
+                <div style="text-align: center; margin-top: 15px;">
+                    <button id="get-resources"><i class="fas fa-external-link-alt"></i> Get Learning Resources</button>
+                </div>
+                <div id="resources-output" class="fade-in" style="margin-top: 20px;"></div>
             </div>
-            <div class="form-group">
-                <label for="sleep" class="required"><i class="fas fa-bed"></i> Sleep Hours:</label>
-                <input type="number" id="sleep" name="sleep" min="0" max="24" step="0.5" placeholder="e.g., 8">
-            </div>
-            <div class="form-group">
-                <label for="wake-up"><i class="fas fa-sun"></i> Wake Up Time:</label>
-                <span id="wake-up-display"></span>
-            </div>
-            <div class="form-group">
-                <label for="eating" class="required"><i class="fas fa-utensils"></i> Eating:</label>
-                <input type="number" id="eating" name="eating" min="0" max="24" step="0.5" placeholder="e.g., 2">
-            </div>
-            <div class="form-group">
-                <label for="other" class="required"><i class="fas fa-running"></i> Other daily activities (e.g., commuting, exercise):</label>
-                <input type="number" id="other" name="other" min="0" max="24" step="0.5" placeholder="e.g., 1">
-            </div>
-        </div>
 
-        <div class="section">
-            <h2><i class="fas fa-clock"></i> Meal Times</h2>
+            <div class="section flow-step" data-step="2">
+                <h2><i class="fas fa-clock"></i> Daily Rhythm</h2>
+                <div class="form-group">
+                    <label for="sleep-start" class="required"><i class="fas fa-moon"></i> Sleep Start Time:</label>
+                    <input type="text" id="sleep-start" name="sleep-start" placeholder="Select sleep start time">
+                </div>
+                <div class="form-group">
+                    <label for="sleep" class="required"><i class="fas fa-bed"></i> Sleep Hours:</label>
+                    <input type="number" id="sleep" name="sleep" min="0" max="24" step="0.5" placeholder="e.g., 8">
+                </div>
+                <div class="form-group">
+                    <label for="wake-up"><i class="fas fa-sun"></i> Wake Up Time:</label>
+                    <span id="wake-up-display"></span>
+                </div>
+                <div class="form-group">
+                    <label for="eating" class="required"><i class="fas fa-utensils"></i> Eating:</label>
+                    <input type="number" id="eating" name="eating" min="0" max="24" step="0.5" placeholder="e.g., 2">
+                </div>
+                <div class="form-group">
+                    <label for="other" class="required"><i class="fas fa-running"></i> Other daily activities (e.g., commuting, exercise):</label>
+                    <input type="number" id="other" name="other" min="0" max="24" step="0.5" placeholder="e.g., 1">
+                </div>
+            </div>
+
+            <div class="section flow-step" data-step="3">
+                <h2><i class="fas fa-clock"></i> Meal Times</h2>
+                <div class="input-group">
+                    <div class="form-group">
+                        <label for="breakfast" class="required"><i class="fas fa-coffee"></i> Breakfast Time:</label>
+                        <input type="text" id="breakfast" name="breakfast" placeholder="Select breakfast time">
+                    </div>
+                    <div class="form-group">
+                        <label for="lunch" class="required"><i class="fas fa-hamburger"></i> Lunch Time:</label>
+                        <input type="text" id="lunch" name="lunch" placeholder="Select lunch time">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <div class="form-group">
+                        <label for="dinner" class="required"><i class="fas fa-pizza-slice"></i> Dinner Time:</label>
+                        <input type="text" id="dinner" name="dinner" placeholder="Select dinner time">
+                    </div>
+                    <div class="form-group">
+                        <label for="snacks"><i class="fas fa-cookie-bite"></i> Mid-break Snacks Time:</label>
+                        <input type="text" id="snacks" name="snacks" placeholder="Select snacks time">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section flow-step" data-step="4">
+                <h2><i class="fas fa-book"></i> Subjects (Drag to reorder)</h2>
+                <div id="subjects-container">
+                    <div class="subject">
+                        <label class="required"><i class="fas fa-graduation-cap"></i> Subject Name:</label>
+                        <input type="text" class="subject-name" placeholder="e.g., Math">
+                        <label class="required"><i class="fas fa-dumbbell"></i> Strength (1-10):</label>
+                        <input type="number" class="subject-strength" min="1" max="10" placeholder="1-10">
+                        <label class="required"><i class="fas fa-target"></i> Target Marks (1-10):</label>
+                        <input type="number" class="subject-marks" min="1" max="10" placeholder="1-10">
+                        <button class="delete-subject"><i class="fas fa-trash"></i> Delete</button>
+                    </div>
+                </div>
+                <button id="add-subject"><i class="fas fa-plus"></i> Add Another Subject</button>
+            </div>
+
+            <div class="section flow-step" data-step="5">
+                <h2><i class="fas fa-calendar-alt"></i> Study Session</h2>
+                <div class="input-group">
+                    <div class="form-group">
+                        <label for="start-datetime" class="required"><i class="fas fa-play"></i> Starting Date and Time:</label>
+                        <input type="text" id="start-datetime" name="start-datetime" placeholder="Select start date and time">
+                    </div>
+                    <div class="form-group">
+                        <label for="end-datetime" class="required"><i class="fas fa-stop"></i> Ending Date and Time:</label>
+                        <input type="text" id="end-datetime" name="end-datetime" placeholder="Select end date and time">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <div class="form-group">
+                        <label for="study-interval"><i class="fas fa-hourglass-half"></i> Study Interval (minutes):</label>
+                        <input type="number" id="study-interval" name="study-interval" min="1" placeholder="25" value="25">
+                    </div>
+                    <div class="form-group">
+                        <label for="break-interval"><i class="fas fa-coffee"></i> Break Interval (minutes):</label>
+                        <input type="number" id="break-interval" name="break-interval" min="1" placeholder="5" value="5">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section flow-step" data-step="6">
+                <h2><i class="fas fa-magic"></i> Build My Plan</h2>
+                <p style="color: #555; margin-top: 0;">Review your details, then generate a continuous study plan with your assessments and resources inline.</p>
+                <div style="text-align: center; margin: 15px 0 10px 0;">
+                    <button id="generate-plan"><i class="fas fa-wand-magic-sparkles"></i> Generate Study Plan</button>
+                </div>
+                <div id="study-plan-output" class="fade-in" style="margin-top: 10px;"></div>
+            </div>
+
+            <div class="section flow-step" data-step="7">
+                <h2><i class="fas fa-brain"></i> Knowledge Assessment</h2>
+                <div class="input-group">
+                    <div class="form-group">
+                        <label for="nationality"><i class="fas fa-globe"></i> Country:</label>
+                        <select id="nationality">
+                        <option value="">Select your country</option>
+                        <option value="afghanistan">Afghanistan</option>
+                        <option value="albania">Albania</option>
+                        <option value="algeria">Algeria</option>
+                        <option value="andorra">Andorra</option>
+                        <option value="angola">Angola</option>
+                        <option value="antiguaandbarbuda">Antigua and Barbuda</option>
+                        <option value="argentina">Argentina</option>
+                        <option value="armenia">Armenia</option>
+                        <option value="australia">Australia</option>
+                        <option value="austria">Austria</option>
+                        <option value="azerbaijan">Azerbaijan</option>
+                        <option value="bahamas">Bahamas</option>
+                        <option value="bahrain">Bahrain</option>
+                        <option value="bangladesh">Bangladesh</option>
+                        <option value="barbados">Barbados</option>
+                        <option value="belarus">Belarus</option>
+                        <option value="belgium">Belgium</option>
+                        <option value="belize">Belize</option>
+                        <option value="benin">Benin</option>
+                        <option value="bhutan">Bhutan</option>
+                        <option value="bolivia">Bolivia</option>
+                        <option value="bosniaandherzegovina">Bosnia and Herzegovina</option>
+                        <option value="botswana">Botswana</option>
+                        <option value="brazil">Brazil</option>
+                        <option value="brunei">Brunei</option>
+                        <option value="bulgaria">Bulgaria</option>
+                        <option value="burkinafaso">Burkina Faso</option>
+                        <option value="burundi">Burundi</option>
+                        <option value="cambodia">Cambodia</option>
+                        <option value="cameroon">Cameroon</option>
+                        <option value="canada">Canada</option>
+                        <option value="capeverde">Cape Verde</option>
+                        <option value="centralafricanrepublic">Central African Republic</option>
+                        <option value="chad">Chad</option>
+                        <option value="chile">Chile</option>
+                        <option value="china">China</option>
+                        <option value="colombia">Colombia</option>
+                        <option value="comoros">Comoros</option>
+                        <option value="congo">Congo</option>
+                        <option value="costarica">Costa Rica</option>
+                        <option value="croatia">Croatia</option>
+                        <option value="cuba">Cuba</option>
+                        <option value="cyprus">Cyprus</option>
+                        <option value="czechrepublic">Czech Republic</option>
+                        <option value="denmark">Denmark</option>
+                        <option value="djibouti">Djibouti</option>
+                        <option value="dominica">Dominica</option>
+                        <option value="dominicanrepublic">Dominican Republic</option>
+                        <option value="ecuador">Ecuador</option>
+                        <option value="egypt">Egypt</option>
+                        <option value="elsalvador">El Salvador</option>
+                        <option value="equatorialguinea">Equatorial Guinea</option>
+                        <option value="eritrea">Eritrea</option>
+                        <option value="estonia">Estonia</option>
+                        <option value="eswatini">Eswatini</option>
+                        <option value="ethiopia">Ethiopia</option>
+                        <option value="fiji">Fiji</option>
+                        <option value="finland">Finland</option>
+                        <option value="france">France</option>
+                        <option value="gabon">Gabon</option>
+                        <option value="gambia">Gambia</option>
+                        <option value="georgia">Georgia</option>
+                        <option value="germany">Germany</option>
+                        <option value="ghana">Ghana</option>
+                        <option value="greece">Greece</option>
+                        <option value="grenada">Grenada</option>
+                        <option value="guatemala">Guatemala</option>
+                        <option value="guinea">Guinea</option>
+                        <option value="guineabissau">Guinea-Bissau</option>
+                        <option value="guyana">Guyana</option>
+                        <option value="haiti">Haiti</option>
+                        <option value="honduras">Honduras</option>
+                        <option value="hungary">Hungary</option>
+                        <option value="iceland">Iceland</option>
+                        <option value="india">India</option>
+                        <option value="indonesia">Indonesia</option>
+                        <option value="iran">Iran</option>
+                        <option value="iraq">Iraq</option>
+                        <option value="ireland">Ireland</option>
+                        <option value="israel">Israel</option>
+                        <option value="italy">Italy</option>
+                        <option value="jamaica">Jamaica</option>
+                        <option value="japan">Japan</option>
+                        <option value="jordan">Jordan</option>
+                        <option value="kazakhstan">Kazakhstan</option>
+                        <option value="kenya">Kenya</option>
+                        <option value="kiribati">Kiribati</option>
+                        <option value="kuwait">Kuwait</option>
+                        <option value="kyrgyzstan">Kyrgyzstan</option>
+                        <option value="laos">Laos</option>
+                        <option value="latvia">Latvia</option>
+                        <option value="lebanon">Lebanon</option>
+                        <option value="lesotho">Lesotho</option>
+                        <option value="liberia">Liberia</option>
+                        <option value="libya">Libya</option>
+                        <option value="liechtenstein">Liechtenstein</option>
+                        <option value="lithuania">Lithuania</option>
+                        <option value="luxembourg">Luxembourg</option>
+                        <option value="madagascar">Madagascar</option>
+                        <option value="malawi">Malawi</option>
+                        <option value="malaysia">Malaysia</option>
+                        <option value="maldives">Maldives</option>
+                        <option value="mali">Mali</option>
+                        <option value="malta">Malta</option>
+                        <option value="marshallislands">Marshall Islands</option>
+                        <option value="mauritania">Mauritania</option>
+                        <option value="mauritius">Mauritius</option>
+                        <option value="mexico">Mexico</option>
+                        <option value="micronesia">Micronesia</option>
+                        <option value="moldova">Moldova</option>
+                        <option value="monaco">Monaco</option>
+                        <option value="mongolia">Mongolia</option>
+                        <option value="montenegro">Montenegro</option>
+                        <option value="morocco">Morocco</option>
+                        <option value="mozambique">Mozambique</option>
+                        <option value="myanmar">Myanmar</option>
+                        <option value="namibia">Namibia</option>
+                        <option value="nauru">Nauru</option>
+                        <option value="nepal">Nepal</option>
+                        <option value="netherlands">Netherlands</option>
+                        <option value="newzealand">New Zealand</option>
+                        <option value="nicaragua">Nicaragua</option>
+                        <option value="niger">Niger</option>
+                        <option value="nigeria">Nigeria</option>
+                        <option value="northkorea">North Korea</option>
+                        <option value="northmacedonia">North Macedonia</option>
+                        <option value="norway">Norway</option>
+                        <option value="oman">Oman</option>
+                        <option value="pakistan">Pakistan</option>
+                        <option value="palau">Palau</option>
+                        <option value="palestine">Palestine</option>
+                        <option value="panama">Panama</option>
+                        <option value="papuanewguinea">Papua New Guinea</option>
+                        <option value="paraguay">Paraguay</option>
+                        <option value="peru">Peru</option>
+                        <option value="philippines">Philippines</option>
+                        <option value="poland">Poland</option>
+                        <option value="portugal">Portugal</option>
+                        <option value="qatar">Qatar</option>
+                        <option value="romania">Romania</option>
+                        <option value="russia">Russia</option>
+                        <option value="rwanda">Rwanda</option>
+                        <option value="saintkittsandnevis">Saint Kitts and Nevis</option>
+                        <option value="saintlucia">Saint Lucia</option>
+                        <option value="saintvincentandthegrenadines">Saint Vincent and the Grenadines</option>
+                        <option value="samoa">Samoa</option>
+                        <option value="sanmarino">San Marino</option>
+                        <option value="saotomeandprincipe">Sao Tome and Principe</option>
+                        <option value="saudiarabia">Saudi Arabia</option>
+                        <option value="senegal">Senegal</option>
+                        <option value="serbia">Serbia</option>
+                        <option value="seychelles">Seychelles</option>
+                        <option value="sierraleone">Sierra Leone</option>
+                        <option value="singapore">Singapore</option>
+                        <option value="slovakia">Slovakia</option>
+                        <option value="slovenia">Slovenia</option>
+                        <option value="solomonislands">Solomon Islands</option>
+                        <option value="somalia">Somalia</option>
+                        <option value="southafrica">South Africa</option>
+                        <option value="southkorea">South Korea</option>
+                        <option value="southsudan">South Sudan</option>
+                        <option value="spain">Spain</option>
+                        <option value="srilanka">Sri Lanka</option>
+                        <option value="sudan">Sudan</option>
+                        <option value="suriname">Suriname</option>
+                        <option value="sweden">Sweden</option>
+                        <option value="switzerland">Switzerland</option>
+                        <option value="syria">Syria</option>
+                        <option value="taiwan">Taiwan</option>
+                        <option value="tajikistan">Tajikistan</option>
+                        <option value="tanzania">Tanzania</option>
+                        <option value="thailand">Thailand</option>
+                        <option value="timor-leste">Timor-Leste</option>
+                        <option value="togo">Togo</option>
+                        <option value="tonga">Tonga</option>
+                        <option value="trinidadandtobago">Trinidad and Tobago</option>
+                        <option value="tunisia">Tunisia</option>
+                        <option value="turkey">Turkey</option>
+                        <option value="turkmenistan">Turkmenistan</option>
+                        <option value="tuvalu">Tuvalu</option>
+                        <option value="uganda">Uganda</option>
+                        <option value="ukraine">Ukraine</option>
+                        <option value="uae">United Arab Emirates</option>
+                        <option value="uk">United Kingdom</option>
+                        <option value="us">United States</option>
+                        <option value="uruguay">Uruguay</option>
+                        <option value="uzbekistan">Uzbekistan</option>
+                        <option value="vanuatu">Vanuatu</option>
+                        <option value="vaticancity">Vatican City</option>
+                        <option value="venezuela">Venezuela</option>
+                        <option value="vietnam">Vietnam</option>
+                        <option value="yemen">Yemen</option>
+                        <option value="zambia">Zambia</option>
+                        <option value="zimbabwe">Zimbabwe</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="education-level"><i class="fas fa-level-up-alt"></i> Education Level:</label>
+                    <select id="education-level">
+                        <option value="">Select education level</option>
+                        <optgroup label="School Education">
+                            <option value="elementary">Elementary School (Grades 1-5)</option>
+                            <option value="middle">Middle School (Grades 6-8)</option>
+                            <option value="high">High School (Grades 9-12)</option>
+                        </optgroup>
+                        <optgroup label="Higher Education">
+                            <option value="undergraduate">Undergraduate (Bachelor's)</option>
+                            <option value="graduate">Graduate (Master's)</option>
+                            <option value="phd">PhD/Doctorate</option>
+                        </optgroup>
+                    </select>
+                </div>
+            </div>
             <div class="input-group">
                 <div class="form-group">
-                    <label for="breakfast" class="required"><i class="fas fa-coffee"></i> Breakfast Time:</label>
-                    <input type="text" id="breakfast" name="breakfast" placeholder="Select breakfast time">
+                    <label for="institution"><i class="fas fa-university"></i> Institution:</label>
+                    <select id="institution">
+                        <option value="">Select institution</option>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label for="lunch" class="required"><i class="fas fa-hamburger"></i> Lunch Time:</label>
-                    <input type="text" id="lunch" name="lunch" placeholder="Select lunch time">
+                    <label for="study-course"><i class="fas fa-book-open"></i> Course/Subject:</label>
+                    <select id="study-course">
+                        <option value="">Select course/subject</option>
+                    </select>
                 </div>
-            </div>
-            <div class="input-group">
-                <div class="form-group">
-                    <label for="dinner" class="required"><i class="fas fa-pizza-slice"></i> Dinner Time:</label>
-                    <input type="text" id="dinner" name="dinner" placeholder="Select dinner time">
-                </div>
-                <div class="form-group">
-                    <label for="snacks"><i class="fas fa-cookie-bite"></i> Mid-break Snacks Time:</label>
-                    <input type="text" id="snacks" name="snacks" placeholder="Select snacks time">
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2><i class="fas fa-book"></i> Subjects (Drag to reorder)</h2>
-            <div id="subjects-container">
-                <div class="subject">
-                    <label class="required"><i class="fas fa-graduation-cap"></i> Subject Name:</label>
-                    <input type="text" class="subject-name" placeholder="e.g., Math">
-                    <label class="required"><i class="fas fa-dumbbell"></i> Strength (1-10):</label>
-                    <input type="number" class="subject-strength" min="1" max="10" placeholder="1-10">
-                    <label class="required"><i class="fas fa-target"></i> Target Marks (1-10):</label>
-                    <input type="number" class="subject-marks" min="1" max="10" placeholder="1-10">
-                    <button class="delete-subject"><i class="fas fa-trash"></i> Delete</button>
-                </div>
-            </div>
-            <button id="add-subject"><i class="fas fa-plus"></i> Add Another Subject</button>
-        </div>
-
-        <div class="section">
-            <h2><i class="fas fa-calendar-alt"></i> Study Session</h2>
-            <div class="input-group">
-                <div class="form-group">
-                    <label for="start-datetime" class="required"><i class="fas fa-play"></i> Starting Date and Time:</label>
-                    <input type="text" id="start-datetime" name="start-datetime" placeholder="Select start date and time">
-                </div>
-                <div class="form-group">
-                    <label for="end-datetime" class="required"><i class="fas fa-stop"></i> Ending Date and Time:</label>
-                    <input type="text" id="end-datetime" name="end-datetime" placeholder="Select end date and time">
-                </div>
-            </div>
-            <div class="input-group">
-                <div class="form-group">
-                    <label for="study-interval"><i class="fas fa-hourglass-half"></i> Study Interval (minutes):</label>
-                    <input type="number" id="study-interval" name="study-interval" min="1" placeholder="25" value="25">
-                </div>
-                <div class="form-group">
-                    <label for="break-interval"><i class="fas fa-coffee"></i> Break Interval (minutes):</label>
-                    <input type="number" id="break-interval" name="break-interval" min="1" placeholder="5" value="5">
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2><i class="fas fa-search"></i> Quick Learning Resources</h2>
-            <div class="form-group">
-                <label for="learning-topic"><i class="fas fa-book"></i> What do you want to learn?</label>
-                <input type="text" id="learning-topic" placeholder="Enter a topic (e.g., Python programming, World War II, Algebra)">
             </div>
             <div style="text-align: center; margin-top: 15px;">
-                <button id="get-resources"><i class="fas fa-external-link-alt"></i> Get Learning Resources</button>
+                <button id="get-question-papers"><i class="fas fa-question-circle"></i> Test My Knowledge</button>
             </div>
-            <div id="resources-output" class="fade-in" style="margin-top: 20px;"></div>
+            <div id="question-papers-output" class="fade-in" style="margin-top: 20px;"></div>
         </div>
 
-        <div style="text-align: center; margin: 30px 0;">
-            <button id="generate-plan"><i class="fas fa-magic"></i> Generate Study Plan</button>
         </div>
-
-        <div id="study-plan-output" class="fade-in"></div>
     </div>
 
 <script>
@@ -670,6 +959,30 @@
                     <a href="https://www.khanacademy.org/search?page_search_query=${encodeURIComponent(topic)}" target="_blank" style="display: inline-flex; align-items: center; padding: 12px 20px; background: #14b866; color: white; text-decoration: none; border-radius: 8px; font-weight: 500; transition: all 0.3s ease;">
                         <i class="fas fa-graduation-cap" style="margin-right: 8px;"></i> Khan Academy
                     </a>
+                    <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(topic + ' tutorial')}" target="_blank" style="display: inline-flex; align-items: center; padding: 12px 20px; background: #ff0000; color: white; text-decoration: none; border-radius: 8px; font-weight: 500; transition: all 0.3s ease;">
+                        <i class="fab fa-youtube" style="margin-right: 8px;"></i> YouTube Tutorials
+                    </a>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+                        <span style="font-size: 12px; color: #666; margin-right: 5px;">Ask AI:</span>
+                        <a href="https://www.perplexity.ai/search?q=${encodeURIComponent('Explain ' + topic + ' in detail')}" target="_blank" style="display: inline-flex; align-items: center; padding: 8px 12px; background: #7c3aed; color: white; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 12px; transition: all 0.3s ease;">
+                            <i class="fas fa-brain" style="margin-right: 5px;"></i> Perplexity*
+                        </a>
+                        <a href="https://gemini.google.com/" target="_blank" style="display: inline-flex; align-items: center; padding: 8px 12px; background: #4285f4; color: white; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 12px; transition: all 0.3s ease;">
+                            <i class="fab fa-google" style="margin-right: 5px;"></i> Gemini
+                        </a>
+                        <a href="https://grok.x.ai/" target="_blank" style="display: inline-flex; align-items: center; padding: 8px 12px; background: #000; color: white; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 12px; transition: all 0.3s ease;">
+                            <i class="fas fa-rocket" style="margin-right: 5px;"></i> Grok
+                        </a>
+                        <a href="https://claude.ai/" target="_blank" style="display: inline-flex; align-items: center; padding: 8px 12px; background: #d97706; color: white; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 12px; transition: all 0.3s ease;">
+                            <i class="fas fa-user-friends" style="margin-right: 5px;"></i> Claude
+                        </a>
+                    </div>
+                    <p style="margin: 8px 0 0 0; color: #888; font-size: 11px;">
+                        <i class="fas fa-info-circle"></i> *Perplexity provides instant results. Others open AI interfaces where you can ask about the topic.
+                    </p>
+                    <a href="https://www.researchgate.net/search?q=${encodeURIComponent(topic)}" target="_blank" style="display: inline-flex; align-items: center; padding: 12px 20px; background: #06b6d4; color: white; text-decoration: none; border-radius: 8px; font-weight: 500; transition: all 0.3s ease;">
+                        <i class="fas fa-file-alt" style="margin-right: 8px;"></i> ResearchGate Papers
+                    </a>
                     <a href="https://en.wikipedia.org/wiki/${encodeURIComponent(topic.replace(/\s+/g, '_'))}" target="_blank" style="display: inline-flex; align-items: center; padding: 12px 20px; background: #666; color: white; text-decoration: none; border-radius: 8px; font-weight: 500; transition: all 0.3s ease;">
                         <i class="fab fa-wikipedia-w" style="margin-right: 8px;"></i> Wikipedia
                     </a>
@@ -688,6 +1001,811 @@
             document.getElementById('get-resources').click();
         }
     });
+
+    // Knowledge Assessment Dropdown Data and Logic
+    const institutionsByCountry = {
+        // North America
+        us: {
+            undergraduate: [
+                "Harvard University", "Stanford University", "MIT", "UC Berkeley", "Yale University",
+                "Princeton University", "Columbia University", "University of Chicago", "Duke University", "Johns Hopkins University"
+            ],
+            graduate: [
+                "Harvard University", "Stanford University", "MIT", "UC Berkeley", "Yale University",
+                "Princeton University", "Columbia University", "University of Chicago", "Duke University", "Johns Hopkins University"
+            ],
+            phd: [
+                "Harvard University", "Stanford University", "MIT", "UC Berkeley", "Yale University",
+                "Princeton University", "Columbia University", "University of Chicago", "Duke University", "Johns Hopkins University"
+            ]
+        },
+        canada: {
+            undergraduate: [
+                "University of Toronto", "McGill University", "University of British Columbia", "University of Montreal", "University of Alberta",
+                "McMaster University", "University of Waterloo", "Western University", "Queen's University", "University of Calgary"
+            ],
+            graduate: [
+                "University of Toronto", "McGill University", "University of British Columbia", "University of Montreal", "University of Alberta",
+                "McMaster University", "University of Waterloo", "Western University", "Queen's University", "University of Calgary"
+            ],
+            phd: [
+                "University of Toronto", "McGill University", "University of British Columbia", "University of Montreal", "University of Alberta",
+                "McMaster University", "University of Waterloo", "Western University", "Queen's University", "University of Calgary"
+            ]
+        },
+        mexico: {
+            undergraduate: [
+                "Universidad Nacional Autónoma de México (UNAM)", "Tecnológico de Monterrey", "Instituto Politécnico Nacional", "Universidad Iberoamericana",
+                "Universidad Autónoma Metropolitana", "Centro de Investigación y Estudios Superiores del IPN", "Universidad de Guadalajara", "Universidad Veracruzana"
+            ],
+            graduate: [
+                "Universidad Nacional Autónoma de México (UNAM)", "Tecnológico de Monterrey", "Instituto Politécnico Nacional", "Universidad Iberoamericana",
+                "Universidad Autónoma Metropolitana", "Centro de Investigación y Estudios Superiores del IPN", "Universidad de Guadalajara", "Universidad Veracruzana"
+            ],
+            phd: [
+                "Universidad Nacional Autónoma de México (UNAM)", "Tecnológico de Monterrey", "Instituto Politécnico Nacional", "Universidad Iberoamericana",
+                "Universidad Autónoma Metropolitana", "Centro de Investigación y Estudios Superiores del IPN", "Universidad de Guadalajara", "Universidad Veracruzana"
+            ]
+        },
+
+        // Europe
+        uk: {
+            undergraduate: [
+                "University of Oxford", "University of Cambridge", "Imperial College London", "UCL", "University of Edinburgh",
+                "King's College London", "London School of Economics", "University of Manchester", "University of Bristol", "University of Warwick"
+            ],
+            graduate: [
+                "University of Oxford", "University of Cambridge", "Imperial College London", "UCL", "University of Edinburgh",
+                "King's College London", "London School of Economics", "University of Manchester", "University of Bristol", "University of Warwick"
+            ],
+            phd: [
+                "University of Oxford", "University of Cambridge", "Imperial College London", "UCL", "University of Edinburgh",
+                "King's College London", "London School of Economics", "University of Manchester", "University of Bristol", "University of Warwick"
+            ]
+        },
+        germany: {
+            undergraduate: [
+                "Technical University of Munich", "LMU Munich", "Heidelberg University", "University of Freiburg", "KIT Karlsruhe",
+                "Humboldt University Berlin", "University of Göttingen", "RWTH Aachen", "University of Tübingen", "Free University Berlin"
+            ],
+            graduate: [
+                "Technical University of Munich", "LMU Munich", "Heidelberg University", "University of Freiburg", "KIT Karlsruhe",
+                "Humboldt University Berlin", "University of Göttingen", "RWTH Aachen", "University of Tübingen", "Free University Berlin"
+            ],
+            phd: [
+                "Technical University of Munich", "LMU Munich", "Heidelberg University", "University of Freiburg", "KIT Karlsruhe",
+                "Humboldt University Berlin", "University of Göttingen", "RWTH Aachen", "University of Tübingen", "Free University Berlin"
+            ]
+        },
+        france: {
+            undergraduate: [
+                "Sorbonne University", "École Polytechnique", "École Normale Supérieure", "University of Paris-Saclay", "CentraleSupélec",
+                "Sciences Po", "University of Strasbourg", "University of Bordeaux", "University of Lyon", "University of Toulouse"
+            ],
+            graduate: [
+                "Sorbonne University", "École Polytechnique", "École Normale Supérieure", "University of Paris-Saclay", "CentraleSupélec",
+                "Sciences Po", "University of Strasbourg", "University of Bordeaux", "University of Lyon", "University of Toulouse"
+            ],
+            phd: [
+                "Sorbonne University", "École Polytechnique", "École Normale Supérieure", "University of Paris-Saclay", "CentraleSupélec",
+                "Sciences Po", "University of Strasbourg", "University of Bordeaux", "University of Lyon", "University of Toulouse"
+            ]
+        },
+        italy: {
+            undergraduate: [
+                "Sapienza University of Rome", "University of Milan", "University of Bologna", "Politecnico di Milano", "University of Padua",
+                "University of Naples Federico II", "University of Pisa", "University of Turin", "University of Florence", "LUISS University"
+            ],
+            graduate: [
+                "Sapienza University of Rome", "University of Milan", "University of Bologna", "Politecnico di Milano", "University of Padua",
+                "University of Naples Federico II", "University of Pisa", "University of Turin", "University of Florence", "LUISS University"
+            ],
+            phd: [
+                "Sapienza University of Rome", "University of Milan", "University of Bologna", "Politecnico di Milano", "University of Padua",
+                "University of Naples Federico II", "University of Pisa", "University of Turin", "University of Florence", "LUISS University"
+            ]
+        },
+        spain: {
+            undergraduate: [
+                "University of Barcelona", "Complutense University of Madrid", "University of Valencia", "Polytechnic University of Catalonia",
+                "University of Seville", "Autonomous University of Madrid", "University of Granada", "University of Zaragoza", "Pompeu Fabra University"
+            ],
+            graduate: [
+                "University of Barcelona", "Complutense University of Madrid", "University of Valencia", "Polytechnic University of Catalonia",
+                "University of Seville", "Autonomous University of Madrid", "University of Granada", "University of Zaragoza", "Pompeu Fabra University"
+            ],
+            phd: [
+                "University of Barcelona", "Complutense University of Madrid", "University of Valencia", "Polytechnic University of Catalonia",
+                "University of Seville", "Autonomous University of Madrid", "University of Granada", "University of Zaragoza", "Pompeu Fabra University"
+            ]
+        },
+        netherlands: {
+            undergraduate: [
+                "University of Amsterdam", "Delft University of Technology", "Utrecht University", "Leiden University", "Eindhoven University of Technology",
+                "University of Groningen", "Erasmus University Rotterdam", "Wageningen University", "Tilburg University", "Radboud University"
+            ],
+            graduate: [
+                "University of Amsterdam", "Delft University of Technology", "Utrecht University", "Leiden University", "Eindhoven University of Technology",
+                "University of Groningen", "Erasmus University Rotterdam", "Wageningen University", "Tilburg University", "Radboud University"
+            ],
+            phd: [
+                "University of Amsterdam", "Delft University of Technology", "Utrecht University", "Leiden University", "Eindhoven University of Technology",
+                "University of Groningen", "Erasmus University Rotterdam", "Wageningen University", "Tilburg University", "Radboud University"
+            ]
+        },
+        sweden: {
+            undergraduate: [
+                "KTH Royal Institute of Technology", "Lund University", "Uppsala University", "Stockholm University", "Chalmers University of Technology",
+                "University of Gothenburg", "Linköping University", "Karolinska Institute", "Swedish University of Agricultural Sciences"
+            ],
+            graduate: [
+                "KTH Royal Institute of Technology", "Lund University", "Uppsala University", "Stockholm University", "Chalmers University of Technology",
+                "University of Gothenburg", "Linköping University", "Karolinska Institute", "Swedish University of Agricultural Sciences"
+            ],
+            phd: [
+                "KTH Royal Institute of Technology", "Lund University", "Uppsala University", "Stockholm University", "Chalmers University of Technology",
+                "University of Gothenburg", "Linköping University", "Karolinska Institute", "Swedish University of Agricultural Sciences"
+            ]
+        },
+        switzerland: {
+            undergraduate: [
+                "ETH Zurich", "University of Zurich", "University of Geneva", "University of Basel", "University of Lausanne",
+                "University of Bern", "EPFL", "University of St. Gallen", "University of Lugano"
+            ],
+            graduate: [
+                "ETH Zurich", "University of Zurich", "University of Geneva", "University of Basel", "University of Lausanne",
+                "University of Bern", "EPFL", "University of St. Gallen", "University of Lugano"
+            ],
+            phd: [
+                "ETH Zurich", "University of Zurich", "University of Geneva", "University of Basel", "University of Lausanne",
+                "University of Bern", "EPFL", "University of St. Gallen", "University of Lugano"
+            ]
+        },
+
+        // Asia
+        india: {
+            undergraduate: [
+                "IIT Delhi", "IIT Bombay", "IIT Madras", "IIT Kanpur", "IIT Kharagpur",
+                "Delhi University", "JNU", "BITS Pilani", "IIT Roorkee", "Anna University"
+            ],
+            graduate: [
+                "IIT Delhi", "IIT Bombay", "IIT Madras", "IIT Kanpur", "IIT Kharagpur",
+                "Delhi University", "JNU", "BITS Pilani", "IIT Roorkee", "Anna University"
+            ],
+            phd: [
+                "IIT Delhi", "IIT Bombay", "IIT Madras", "IIT Kanpur", "IIT Kharagpur",
+                "Delhi University", "JNU", "BITS Pilani", "IIT Roorkee", "Anna University"
+            ]
+        },
+        nepal: {
+            undergraduate: [
+                "Tribhuvan University", "Kathmandu University", "Pokhara University", "Purbanchal University", "Nepal Open University",
+                "Mid-Western University", "Far Western University"
+            ],
+            graduate: [
+                "Tribhuvan University", "Kathmandu University", "Pokhara University", "Purbanchal University", "Nepal Open University",
+                "Mid-Western University", "Far Western University"
+            ],
+            phd: [
+                "Tribhuvan University", "Kathmandu University", "Pokhara University", "Purbanchal University", "Nepal Open University",
+                "Mid-Western University", "Far Western University"
+            ]
+        },
+        china: {
+            undergraduate: [
+                "Tsinghua University", "Peking University", "Shanghai Jiao Tong University", "Fudan University", "Zhejiang University",
+                "University of Science and Technology of China", "Nanjing University", "Wuhan University", "Tongji University", "Renmin University of China"
+            ],
+            graduate: [
+                "Tsinghua University", "Peking University", "Shanghai Jiao Tong University", "Fudan University", "Zhejiang University",
+                "University of Science and Technology of China", "Nanjing University", "Wuhan University", "Tongji University", "Renmin University of China"
+            ],
+            phd: [
+                "Tsinghua University", "Peking University", "Shanghai Jiao Tong University", "Fudan University", "Zhejiang University",
+                "University of Science and Technology of China", "Nanjing University", "Wuhan University", "Tongji University", "Renmin University of China"
+            ]
+        },
+        japan: {
+            undergraduate: [
+                "University of Tokyo", "Kyoto University", "Osaka University", "Tokyo Institute of Technology", "Tohoku University",
+                "Nagoya University", "Hokkaido University", "Kyushu University", "Waseda University", "Keio University"
+            ],
+            graduate: [
+                "University of Tokyo", "Kyoto University", "Osaka University", "Tokyo Institute of Technology", "Tohoku University",
+                "Nagoya University", "Hokkaido University", "Kyushu University", "Waseda University", "Keio University"
+            ],
+            phd: [
+                "University of Tokyo", "Kyoto University", "Osaka University", "Tokyo Institute of Technology", "Tohoku University",
+                "Nagoya University", "Hokkaido University", "Kyushu University", "Waseda University", "Keio University"
+            ]
+        },
+        southkorea: {
+            undergraduate: [
+                "Seoul National University", "Korea University", "Yonsei University", "KAIST", "Pohang University of Science and Technology",
+                "Sungkyunkwan University", "Hanyang University", "Kyung Hee University", "Ewha Womans University", "Chung-Ang University"
+            ],
+            graduate: [
+                "Seoul National University", "Korea University", "Yonsei University", "KAIST", "Pohang University of Science and Technology",
+                "Sungkyunkwan University", "Hanyang University", "Kyung Hee University", "Ewha Womans University", "Chung-Ang University"
+            ],
+            phd: [
+                "Seoul National University", "Korea University", "Yonsei University", "KAIST", "Pohang University of Science and Technology",
+                "Sungkyunkwan University", "Hanyang University", "Kyung Hee University", "Ewha Womans University", "Chung-Ang University"
+            ]
+        },
+        singapore: {
+            undergraduate: [
+                "National University of Singapore", "Nanyang Technological University", "Singapore Management University", "Singapore University of Technology and Design",
+                "Singapore Institute of Technology", "Singapore University of Social Sciences"
+            ],
+            graduate: [
+                "National University of Singapore", "Nanyang Technological University", "Singapore Management University", "Singapore University of Technology and Design",
+                "Singapore Institute of Technology", "Singapore University of Social Sciences"
+            ],
+            phd: [
+                "National University of Singapore", "Nanyang Technological University", "Singapore Management University", "Singapore University of Technology and Design",
+                "Singapore Institute of Technology", "Singapore University of Social Sciences"
+            ]
+        },
+
+        // Oceania
+        australia: {
+            undergraduate: [
+                "University of Melbourne", "University of Sydney", "University of Queensland", "Monash University", "University of New South Wales",
+                "Australian National University", "University of Western Australia", "University of Adelaide", "University of Technology Sydney", "Queensland University of Technology"
+            ],
+            graduate: [
+                "University of Melbourne", "University of Sydney", "University of Queensland", "Monash University", "University of New South Wales",
+                "Australian National University", "University of Western Australia", "University of Adelaide", "University of Technology Sydney", "Queensland University of Technology"
+            ],
+            phd: [
+                "University of Melbourne", "University of Sydney", "University of Queensland", "Monash University", "University of New South Wales",
+                "Australian National University", "University of Western Australia", "University of Adelaide", "University of Technology Sydney", "Queensland University of Technology"
+            ]
+        },
+        newzealand: {
+            undergraduate: [
+                "University of Auckland", "University of Otago", "Victoria University of Wellington", "University of Canterbury", "Massey University",
+                "University of Waikato", "Lincoln University", "Auckland University of Technology"
+            ],
+            graduate: [
+                "University of Auckland", "University of Otago", "Victoria University of Wellington", "University of Canterbury", "Massey University",
+                "University of Waikato", "Lincoln University", "Auckland University of Technology"
+            ],
+            phd: [
+                "University of Auckland", "University of Otago", "Victoria University of Wellington", "University of Canterbury", "Massey University",
+                "University of Waikato", "Lincoln University", "Auckland University of Technology"
+            ]
+        },
+
+        // Default institutions for countries not specifically listed
+        default: {
+            undergraduate: [
+                "National University", "State University", "Technical University", "University of Science and Technology",
+                "Medical University", "Agricultural University", "University of Arts and Humanities", "Polytechnic Institute",
+                "Business School", "Liberal Arts College", "Community College", "Regional University"
+            ],
+            graduate: [
+                "National University", "State University", "Technical University", "University of Science and Technology",
+                "Medical University", "Agricultural University", "University of Arts and Humanities", "Polytechnic Institute",
+                "Business School", "Research Institute", "Graduate School", "Professional Academy"
+            ],
+            phd: [
+                "National University", "State University", "Technical University", "University of Science and Technology",
+                "Medical University", "Agricultural University", "University of Arts and Humanities", "Polytechnic Institute",
+                "Research Institute", "Academy of Sciences", "Advanced Research Center", "Doctoral Program Institute"
+            ]
+        }
+    };
+
+    const coursesByInstitution = {
+        // US Universities
+        "Harvard University": {
+            undergraduate: ["Computer Science", "Economics", "Psychology", "Biology", "Mathematics", "Physics", "Chemistry", "History", "English Literature", "Political Science"],
+            graduate: ["Business Administration (MBA)", "Law (JD)", "Medicine (MD)", "Public Health (MPH)", "Data Science", "Engineering", "Education", "Public Policy"],
+            phd: ["Computer Science", "Economics", "Psychology", "Biology", "Mathematics", "Physics", "Chemistry", "History", "English Literature", "Political Science"]
+        },
+        "Stanford University": {
+            undergraduate: ["Computer Science", "Engineering", "Human Biology", "Economics", "Psychology", "Mathematics", "Physics", "Chemistry", "History", "English"],
+            graduate: ["Business Administration (MBA)", "Law (JD)", "Medicine (MD)", "Engineering", "Data Science", "Education", "Public Policy", "Design"],
+            phd: ["Computer Science", "Engineering", "Human Biology", "Economics", "Psychology", "Mathematics", "Physics", "Chemistry", "History", "English"]
+        },
+        "MIT": {
+            undergraduate: ["Computer Science", "Electrical Engineering", "Mechanical Engineering", "Mathematics", "Physics", "Chemistry", "Biology", "Economics", "Aeronautics", "Data Science"],
+            graduate: ["Engineering", "Computer Science", "Data Science", "Business Administration", "Architecture", "Urban Planning", "Media Arts", "Systems Design"],
+            phd: ["Computer Science", "Electrical Engineering", "Mechanical Engineering", "Mathematics", "Physics", "Chemistry", "Biology", "Economics"]
+        },
+        "UC Berkeley": {
+            undergraduate: ["Computer Science", "Electrical Engineering", "Economics", "Psychology", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Political Science"],
+            graduate: ["Business Administration (MBA)", "Law (JD)", "Public Health (MPH)", "Engineering", "Data Science", "Education", "Public Policy", "Journalism"],
+            phd: ["Computer Science", "Electrical Engineering", "Economics", "Psychology", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Political Science"]
+        },
+
+        // UK Universities
+        "University of Oxford": {
+            undergraduate: ["Computer Science", "Mathematics", "Physics", "Chemistry", "Biology", "Economics", "History", "English Literature", "Philosophy", "Law"],
+            graduate: ["Business Administration (MBA)", "Law (MPhil)", "Medicine (DPhil)", "Public Policy", "Data Science", "Engineering", "Education", "International Relations"],
+            phd: ["Computer Science", "Mathematics", "Physics", "Chemistry", "Biology", "Economics", "History", "English Literature", "Philosophy", "Law"]
+        },
+        "University of Cambridge": {
+            undergraduate: ["Computer Science", "Mathematics", "Natural Sciences", "Engineering", "Economics", "History", "English", "Law", "Medicine", "Architecture"],
+            graduate: ["Business Administration (MBA)", "Law (LLM)", "Engineering", "Data Science", "Education", "Public Health", "Architecture", "Land Economy"],
+            phd: ["Computer Science", "Mathematics", "Natural Sciences", "Engineering", "Economics", "History", "English", "Law", "Medicine", "Architecture"]
+        },
+
+        // Indian Institutes
+        "IIT Delhi": {
+            undergraduate: ["Computer Science", "Electrical Engineering", "Mechanical Engineering", "Civil Engineering", "Chemical Engineering", "Mathematics", "Physics", "Chemistry"],
+            graduate: ["Computer Science", "Engineering", "Data Science", "Business Administration", "Design", "Public Policy", "Technology Management"],
+            phd: ["Computer Science", "Electrical Engineering", "Mechanical Engineering", "Civil Engineering", "Chemical Engineering", "Mathematics", "Physics", "Chemistry"]
+        },
+        "IIT Bombay": {
+            undergraduate: ["Computer Science", "Electrical Engineering", "Mechanical Engineering", "Civil Engineering", "Chemical Engineering", "Mathematics", "Physics", "Chemistry"],
+            graduate: ["Computer Science", "Engineering", "Data Science", "Business Administration", "Design", "Public Policy", "Technology Management"],
+            phd: ["Computer Science", "Electrical Engineering", "Mechanical Engineering", "Civil Engineering", "Chemical Engineering", "Mathematics", "Physics", "Chemistry"]
+        },
+
+        // Nepal Universities
+        "Tribhuvan University": {
+            undergraduate: ["Computer Science", "Engineering", "Business Administration", "Education", "Law", "Biology", "Mathematics", "Physics", "Chemistry"],
+            graduate: ["Computer Science", "Business Administration (MBA)", "Education", "Public Health", "Law", "Environmental Science"],
+            phd: ["Computer Science", "Education", "Law", "Environmental Science", "Mathematics"]
+        },
+        "Kathmandu University": {
+            undergraduate: ["Computer Science", "Engineering", "Biotechnology", "Business Administration", "Mathematics", "Physics"],
+            graduate: ["Computer Science", "Engineering", "Data Science", "Business Administration", "Public Health"],
+            phd: ["Computer Science", "Engineering", "Biotechnology"]
+        },
+        "Pokhara University": {
+            undergraduate: ["Computer Science", "Business Administration", "Engineering", "Mathematics", "Education"],
+            graduate: ["Business Administration (MBA)", "Computer Science", "Education"],
+            phd: ["Computer Science", "Education"]
+        },
+        "Purbanchal University": {
+            undergraduate: ["Computer Science", "Engineering", "Business Administration", "Education"],
+            graduate: ["Computer Science", "Business Administration"],
+            phd: ["Computer Science"]
+        },
+        "Nepal Open University": {
+            undergraduate: ["Distance Learning: Computer Science", "Business", "Education"],
+            graduate: ["Distance Learning: Business Administration", "Education", "Public Health"],
+            phd: ["Education", "Public Health"]
+        },
+
+        // Canadian Universities
+        "University of Toronto": {
+            undergraduate: ["Computer Science", "Engineering", "Economics", "Psychology", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Political Science"],
+            graduate: ["Business Administration (MBA)", "Law (JD)", "Medicine (MD)", "Engineering", "Data Science", "Education", "Public Health", "Public Policy"],
+            phd: ["Computer Science", "Engineering", "Economics", "Psychology", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Political Science"]
+        },
+        "McGill University": {
+            undergraduate: ["Computer Science", "Engineering", "Economics", "Psychology", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Political Science"],
+            graduate: ["Business Administration (MBA)", "Law (JD)", "Medicine (MD)", "Engineering", "Data Science", "Education", "Public Health", "Public Policy"],
+            phd: ["Computer Science", "Engineering", "Economics", "Psychology", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Political Science"]
+        },
+
+        // German Universities
+        "Technical University of Munich": {
+            undergraduate: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Biology", "Economics", "Business Administration"],
+            graduate: ["Engineering", "Computer Science", "Data Science", "Business Administration", "Technology Management", "Innovation Management"],
+            phd: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Biology", "Economics"]
+        },
+        "LMU Munich": {
+            undergraduate: ["Psychology", "Economics", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Political Science", "Law", "Medicine"],
+            graduate: ["Psychology", "Economics", "Law", "Medicine", "Data Science", "Education", "Public Policy"],
+            phd: ["Psychology", "Economics", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Political Science"]
+        },
+
+        // French Universities
+        "Sorbonne University": {
+            undergraduate: ["Computer Science", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Literature", "Philosophy", "Law", "Economics"],
+            graduate: ["Computer Science", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Literature", "Law", "Economics", "International Relations"],
+            phd: ["Computer Science", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Literature", "Philosophy", "Law", "Economics"]
+        },
+        "École Polytechnique": {
+            undergraduate: ["Engineering", "Computer Science", "Mathematics", "Physics", "Chemistry", "Data Science"],
+            graduate: ["Engineering", "Computer Science", "Data Science", "Business Administration", "Innovation Management"],
+            phd: ["Engineering", "Computer Science", "Mathematics", "Physics", "Chemistry"]
+        },
+
+        // Italian Universities
+        "Sapienza University of Rome": {
+            undergraduate: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Literature", "Law", "Economics"],
+            graduate: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Biology", "Law", "Economics", "Architecture"],
+            phd: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Literature", "Law", "Economics"]
+        },
+        "Politecnico di Milano": {
+            undergraduate: ["Engineering", "Architecture", "Design", "Computer Science", "Mathematics", "Physics"],
+            graduate: ["Engineering", "Architecture", "Design", "Computer Science", "Data Science", "Business Administration"],
+            phd: ["Engineering", "Architecture", "Design", "Computer Science", "Mathematics", "Physics"]
+        },
+
+        // Spanish Universities
+        "University of Barcelona": {
+            undergraduate: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Literature", "Law", "Economics"],
+            graduate: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Biology", "Law", "Economics", "Business Administration"],
+            phd: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Literature", "Law", "Economics"]
+        },
+
+        // Dutch Universities
+        "University of Amsterdam": {
+            undergraduate: ["Computer Science", "Economics", "Psychology", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Political Science"],
+            graduate: ["Business Administration (MBA)", "Law", "Economics", "Psychology", "Data Science", "Communication", "International Relations"],
+            phd: ["Computer Science", "Economics", "Psychology", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Political Science"]
+        },
+        "Delft University of Technology": {
+            undergraduate: ["Engineering", "Computer Science", "Mathematics", "Physics", "Chemistry", "Architecture"],
+            graduate: ["Engineering", "Computer Science", "Data Science", "Architecture", "Technology Management"],
+            phd: ["Engineering", "Computer Science", "Mathematics", "Physics", "Chemistry"]
+        },
+
+        // Swedish Universities
+        "KTH Royal Institute of Technology": {
+            undergraduate: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Architecture"],
+            graduate: ["Computer Science", "Engineering", "Data Science", "Architecture", "Technology Management"],
+            phd: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry"]
+        },
+
+        // Swiss Universities
+        "ETH Zurich": {
+            undergraduate: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Biology", "Architecture"],
+            graduate: ["Computer Science", "Engineering", "Data Science", "Architecture", "Technology Management", "Business Administration"],
+            phd: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Biology"]
+        },
+
+        // Chinese Universities
+        "Tsinghua University": {
+            undergraduate: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Biology", "Economics", "Business Administration"],
+            graduate: ["Computer Science", "Engineering", "Data Science", "Business Administration", "Public Policy", "International Relations"],
+            phd: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Biology", "Economics"]
+        },
+        "Peking University": {
+            undergraduate: ["Computer Science", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Literature", "Law", "Economics", "Political Science"],
+            graduate: ["Computer Science", "Law", "Economics", "International Relations", "Public Policy", "Business Administration"],
+            phd: ["Computer Science", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Literature", "Law", "Economics", "Political Science"]
+        },
+
+        // Japanese Universities
+        "University of Tokyo": {
+            undergraduate: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Biology", "Economics", "Law"],
+            graduate: ["Computer Science", "Engineering", "Data Science", "Business Administration", "Public Policy", "International Relations"],
+            phd: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Biology", "Economics"]
+        },
+
+        // South Korean Universities
+        "Seoul National University": {
+            undergraduate: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Biology", "Economics", "Business Administration"],
+            graduate: ["Computer Science", "Engineering", "Data Science", "Business Administration", "Public Policy", "International Relations"],
+            phd: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Biology", "Economics"]
+        },
+        "KAIST": {
+            undergraduate: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Biology"],
+            graduate: ["Computer Science", "Engineering", "Data Science", "Business Administration", "Technology Management"],
+            phd: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Biology"]
+        },
+
+        // Singapore Universities
+        "National University of Singapore": {
+            undergraduate: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Biology", "Economics", "Business Administration"],
+            graduate: ["Computer Science", "Engineering", "Data Science", "Business Administration", "Public Policy", "Law"],
+            phd: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Biology", "Economics"]
+        },
+
+        // Australian Universities
+        "University of Melbourne": {
+            undergraduate: ["Computer Science", "Engineering", "Economics", "Psychology", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Law"],
+            graduate: ["Business Administration (MBA)", "Law", "Medicine", "Engineering", "Data Science", "Education", "Public Health"],
+            phd: ["Computer Science", "Engineering", "Economics", "Psychology", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Law"]
+        },
+        "University of Sydney": {
+            undergraduate: ["Computer Science", "Engineering", "Economics", "Psychology", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Law"],
+            graduate: ["Business Administration (MBA)", "Law", "Medicine", "Engineering", "Data Science", "Education", "Public Health"],
+            phd: ["Computer Science", "Engineering", "Economics", "Psychology", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Law"]
+        },
+
+        // New Zealand Universities
+        "University of Auckland": {
+            undergraduate: ["Computer Science", "Engineering", "Economics", "Psychology", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Law"],
+            graduate: ["Business Administration (MBA)", "Law", "Medicine", "Engineering", "Data Science", "Education", "Public Health"],
+            phd: ["Computer Science", "Engineering", "Economics", "Psychology", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Law"]
+        },
+
+        // Mexican Universities
+        "Universidad Nacional Autónoma de México (UNAM)": {
+            undergraduate: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Literature", "Law", "Economics"],
+            graduate: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Biology", "Law", "Economics", "Business Administration"],
+            phd: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Literature", "Law", "Economics"]
+        },
+        "Tecnológico de Monterrey": {
+            undergraduate: ["Computer Science", "Engineering", "Business Administration", "Economics", "Psychology", "Mathematics", "Physics"],
+            graduate: ["Business Administration (MBA)", "Engineering", "Computer Science", "Data Science", "International Business"],
+            phd: ["Computer Science", "Engineering", "Business Administration", "Economics", "Psychology"]
+        },
+
+        // Default courses for other institutions
+        "default": {
+            undergraduate: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Biology", "Economics", "Psychology", "History", "English Literature"],
+            graduate: ["Business Administration", "Data Science", "Engineering", "Public Health", "Education", "Law", "Public Policy", "Technology Management"],
+            phd: ["Computer Science", "Engineering", "Mathematics", "Physics", "Chemistry", "Biology", "Economics", "Psychology", "History", "English Literature"]
+        }
+    };
+
+    // Function to populate institutions based on country and education level
+    function populateInstitutions() {
+        const country = document.getElementById('nationality').value;
+        const level = document.getElementById('education-level').value;
+        const institutionSelect = document.getElementById('institution');
+
+        // Clear current options
+        institutionSelect.innerHTML = '<option value="">Select institution</option>';
+
+        if (country && level) {
+            // Use specific institutions if available, otherwise use default institutions
+            const institutions = institutionsByCountry[country] ?
+                institutionsByCountry[country][level] :
+                institutionsByCountry["default"][level];
+
+            if (institutions) {
+                institutions.forEach(institution => {
+                    const option = document.createElement('option');
+                    option.value = institution;
+                    option.textContent = institution;
+                    institutionSelect.appendChild(option);
+                });
+            }
+        }
+
+        // Clear courses when institution changes
+        document.getElementById('study-course').innerHTML = '<option value="">Select course/subject</option>';
+    }
+
+    // Function to populate courses based on institution and education level
+    function populateCourses() {
+        const institution = document.getElementById('institution').value;
+        const level = document.getElementById('education-level').value;
+        const courseSelect = document.getElementById('study-course');
+
+        // Clear current options
+        courseSelect.innerHTML = '<option value="">Select course/subject</option>';
+
+        if (institution && level) {
+            // Use specific courses if available, otherwise use default courses
+            const courses = coursesByInstitution[institution] ?
+                coursesByInstitution[institution][level] :
+                coursesByInstitution["default"][level];
+
+            if (courses) {
+                courses.forEach(course => {
+                    const option = document.createElement('option');
+                    option.value = course.toLowerCase().replace(/\s+/g, '');
+                    option.textContent = course;
+                    courseSelect.appendChild(option);
+                });
+            }
+        }
+    }
+
+    // Event listeners for dynamic dropdowns
+    document.getElementById('nationality').addEventListener('change', populateInstitutions);
+    document.getElementById('education-level').addEventListener('change', function() {
+        populateInstitutions(); // Repopulate institutions when level changes
+        populateCourses(); // Update courses when level changes
+    });
+    document.getElementById('institution').addEventListener('change', populateCourses);
+
+    // Advanced Study Planning functionality
+    document.getElementById('get-question-papers').addEventListener('click', function() {
+        const level = document.getElementById('education-level').value;
+        const course = document.getElementById('study-course').value.trim();
+        const country = document.getElementById('nationality').value;
+        const institution = document.getElementById('institution').value.trim();
+
+        if (!level || !course || !country) {
+            alert('Please fill in your education level, course/subject, and country.');
+            return;
+        }
+
+        const output = document.getElementById('question-papers-output');
+        output.innerHTML = generateQuestionPaperLinks(level, course, country, institution);
+        output.classList.add('fade-in');
+    });
+
+    function generateQuestionPaperLinks(level, course, country, institution) {
+        // Question database by subject and level
+        const questionBank = {
+            mathematics: {
+                elementary: [
+                    { question: "What is 15 + 27?", answer: "42", type: "input", explanation: "15 + 27 = 42" },
+                    { question: "What is 8 × 6?", answer: "48", type: "input", explanation: "8 × 6 = 48" },
+                    { question: "Which number is larger: 156 or 165?", options: ["156", "165", "Both are equal"], answer: "165", type: "multiple", explanation: "165 is larger than 156" }
+                ],
+                middle: [
+                    { question: "Solve for x: 2x + 5 = 17", answer: "6", type: "input", explanation: "Subtract 5: 2x = 12, divide by 2: x = 6" },
+                    { question: "What is the area of a rectangle with length 8cm and width 5cm?", answer: "40", type: "input", explanation: "Area = length × width = 8 × 5 = 40 cm²" },
+                    { question: "What is 25% of 200?", options: ["25", "50", "75", "100"], answer: "50", type: "multiple", explanation: "25% of 200 = 0.25 × 200 = 50" }
+                ],
+                high: [
+                    { question: "Solve: x² - 5x + 6 = 0", answer: "(x-2)(x-3)", type: "input", explanation: "Factors: (x-2)(x-3) = x² - 3x - 2x + 6 = x² - 5x + 6" },
+                    { question: "What is the Pythagorean theorem?", options: ["a² + b² = c²", "a² - b² = c²", "a² × b² = c²"], answer: "a² + b² = c²", type: "multiple", explanation: "In a right triangle, the square of the hypotenuse equals the sum of squares of the other two sides" },
+                    { question: "Calculate: ∫(2x + 3)dx", answer: "x² + 3x + C", type: "input", explanation: "∫2x dx = x², ∫3 dx = 3x, so x² + 3x + C" }
+                ],
+                undergraduate: [
+                    { question: "What is the derivative of f(x) = x³ + 2x² - 5x + 1?", answer: "3x² + 4x - 5", type: "input", explanation: "d/dx[x³] = 3x², d/dx[2x²] = 4x, d/dx[-5x] = -5, d/dx[1] = 0" },
+                    { question: "Solve the system: 2x + y = 8, x - y = 2", answer: "x=3, y=2", type: "input", explanation: "Add equations: 3x = 10, x = 10/3 ≈ 3.33, then y = 8 - 2x = 8 - 6.66 ≈ 2.33" }
+                ]
+            },
+            physics: {
+                middle: [
+                    { question: "What is the SI unit of force?", options: ["Newton", "Joule", "Watt", "Pascal"], answer: "Newton", type: "multiple", explanation: "Force is measured in Newtons (N)" },
+                    { question: "What happens to the speed of a falling object?", answer: "increases", type: "input", explanation: "Due to gravity, the speed increases as it falls" }
+                ],
+                high: [
+                    { question: "What is Newton's First Law called?", options: ["Law of Inertia", "Law of Acceleration", "Law of Action-Reaction"], answer: "Law of Inertia", type: "multiple", explanation: "Newton's First Law is also known as the Law of Inertia" },
+                    { question: "Calculate work done when force is 10N and displacement is 5m at 0°", answer: "50", type: "input", explanation: "Work = Force × Displacement × cosθ = 10 × 5 × cos0° = 50 J" }
+                ],
+                undergraduate: [
+                    { question: "What is the speed of light in vacuum?", answer: "299792458", type: "input", explanation: "c = 299,792,458 m/s (approximately 3 × 10⁸ m/s)" },
+                    { question: "What is Heisenberg's uncertainty principle?", options: ["Δx × Δp ≥ ℏ/2", "E = mc²", "F = ma"], answer: "Δx × Δp ≥ ℏ/2", type: "multiple", explanation: "The principle states that position and momentum cannot both be precisely known" }
+                ]
+            },
+            chemistry: {
+                middle: [
+                    { question: "What is the chemical symbol for water?", answer: "H2O", type: "input", explanation: "Water consists of 2 hydrogen atoms and 1 oxygen atom" },
+                    { question: "What is the pH of pure water?", options: ["7", "1", "14", "0"], answer: "7", type: "multiple", explanation: "Pure water has a neutral pH of 7" }
+                ],
+                high: [
+                    { question: "What is the atomic number of Carbon?", answer: "6", type: "input", explanation: "Carbon has 6 protons in its nucleus" },
+                    { question: "Balance: H2 + O2 → H2O", answer: "2H2 + O2 → 2H2O", type: "input", explanation: "Two hydrogen molecules react with one oxygen molecule to produce two water molecules" }
+                ],
+                undergraduate: [
+                    { question: "What is Avogadro's number?", answer: "6.02214076e23", type: "input", explanation: "Avogadro's number is approximately 6.022 × 10²³ particles per mole" },
+                    { question: "What is the hybridization of carbon in methane (CH4)?", options: ["sp³", "sp²", "sp", "dsp³"], answer: "sp³", type: "multiple", explanation: "Carbon in methane has four bonds, so it uses sp³ hybridization" }
+                ]
+            },
+            computerscience: {
+                middle: [
+                    { question: "What does CPU stand for?", options: ["Central Processing Unit", "Computer Power Unit", "Control Processing Unit"], answer: "Central Processing Unit", type: "multiple", explanation: "CPU is the brain of the computer" },
+                    { question: "What is binary code made of?", options: ["0s and 1s", "As and Bs", "Xs and Ys"], answer: "0s and 1s", type: "multiple", explanation: "Binary code uses only two digits: 0 and 1" }
+                ],
+                high: [
+                    { question: "What does HTML stand for?", answer: "HyperText Markup Language", type: "input", explanation: "HTML is the standard markup language for web pages" },
+                    { question: "What is the time complexity of binary search?", options: ["O(log n)", "O(n)", "O(n²)"], answer: "O(log n)", type: "multiple", explanation: "Binary search divides the search space in half each time" }
+                ],
+                undergraduate: [
+                    { question: "What is the worst-case time complexity of quicksort?", options: ["O(n log n)", "O(n²)", "O(log n)"], answer: "O(n²)", type: "multiple", explanation: "In the worst case, quicksort can degrade to O(n²) performance" },
+                    { question: "What does SQL stand for?", answer: "Structured Query Language", type: "input", explanation: "SQL is used to manage and manipulate databases" }
+                ]
+            }
+        };
+
+        // Normalize course name for matching
+        const courseKey = course.toLowerCase().replace(/[^a-z]/g, '');
+        const levelKey = level.split('-')[0];
+
+        // Get questions for the subject and level
+        const subjectQuestions = questionBank[courseKey] || questionBank['mathematics'];
+        const questions = subjectQuestions[levelKey] || subjectQuestions['middle'] || [];
+
+        if (questions.length === 0) {
+            return `
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; border-left: 4px solid #667eea;">
+                    <h3 style="margin-top: 0; color: #333;"><i class="fas fa-brain"></i> Knowledge Assessment</h3>
+                    <p>Sorry, we don't have assessment questions for "${course}" at the ${level} level yet. Try Mathematics, Physics, Chemistry, or Computer Science.</p>
+                </div>`;
+        }
+
+        // Create quiz HTML
+        let quizHTML = `
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; border-left: 4px solid #667eea;">
+                <h3 style="margin-top: 0; color: #333;"><i class="fas fa-brain"></i> Knowledge Assessment</h3>
+                <p style="color: #666; margin-bottom: 20px;"><strong>Subject:</strong> ${course} | <strong>Level:</strong> ${level} | <strong>Questions:</strong> ${questions.length}</p>
+                <div id="quiz-container">`;
+
+        questions.forEach((q, index) => {
+            quizHTML += `
+                    <div class="quiz-question" data-index="${index}" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 8px; border: 1px solid #e1e8ed;">
+                        <h4 style="margin-top: 0; color: #333;">Question ${index + 1}: ${q.question}</h4>`;
+
+            if (q.type === 'multiple' && q.options) {
+                q.options.forEach((option, optIndex) => {
+                    quizHTML += `
+                        <label style="display: block; margin: 8px 0; cursor: pointer;">
+                            <input type="radio" name="q${index}" value="${option}" style="margin-right: 8px;">
+                            ${option}
+                        </label>`;
+                });
+            } else {
+                quizHTML += `
+                        <input type="text" class="answer-input" data-index="${index}" placeholder="Your answer" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-top: 8px;">`;
+            }
+
+            quizHTML += `
+                        <div class="feedback" data-index="${index}" style="margin-top: 10px; display: none;"></div>
+                    </div>`;
+        });
+
+        quizHTML += `
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button id="submit-quiz" style="background: #667eea; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 16px;">
+                        <i class="fas fa-check"></i> Submit Assessment
+                    </button>
+                    <button id="reset-quiz" style="background: #6c757d; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 16px; margin-left: 10px;">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+                <div id="quiz-results" style="margin-top: 20px; display: none;"></div>
+            </div>`;
+
+        // Add quiz functionality
+        setTimeout(() => {
+            const submitBtn = document.getElementById('submit-quiz');
+            const resetBtn = document.getElementById('reset-quiz');
+            const resultsDiv = document.getElementById('quiz-results');
+
+            submitBtn.addEventListener('click', () => {
+                let score = 0;
+                let resultsHTML = '<h4 style="color: #333;">Assessment Results:</h4>';
+
+                questions.forEach((q, index) => {
+                    const feedbackDiv = document.querySelector(`.feedback[data-index="${index}"]`);
+                    let userAnswer = '';
+
+                    if (q.type === 'multiple') {
+                        const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                        userAnswer = selected ? selected.value : '';
+                    } else {
+                        const input = document.querySelector(`.answer-input[data-index="${index}"]`);
+                        userAnswer = input ? input.value.trim().toLowerCase() : '';
+                    }
+
+                    const correctAnswer = q.answer.toLowerCase();
+                    const isCorrect = userAnswer === correctAnswer ||
+                                    (q.type === 'input' && Math.abs(parseFloat(userAnswer) - parseFloat(correctAnswer)) < 0.01);
+
+                    if (isCorrect) {
+                        score++;
+                        feedbackDiv.innerHTML = `<span style="color: #28a745;"><i class="fas fa-check"></i> Correct! ${q.explanation}</span>`;
+                    } else {
+                        feedbackDiv.innerHTML = `<span style="color: #dc3545;"><i class="fas fa-times"></i> Incorrect. Correct answer: ${q.answer}. ${q.explanation}</span>`;
+                    }
+
+                    feedbackDiv.style.display = 'block';
+                });
+
+                const percentage = Math.round((score / questions.length) * 100);
+                let performance = '';
+                if (percentage >= 80) performance = '<span style="color: #28a745;">Excellent! 🌟</span>';
+                else if (percentage >= 60) performance = '<span style="color: #ffc107;">Good! Keep practicing! 💪</span>';
+                else performance = '<span style="color: #dc3545;">Needs improvement. Review the material! 📚</span>';
+
+                resultsHTML += `
+                    <div style="background: white; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                        <h4 style="margin-top: 0;">Your Score: ${score}/${questions.length} (${percentage}%)</h4>
+                        <p>${performance}</p>
+                        <p style="color: #666; font-size: 14px;">This assessment helps you identify your strengths and areas for improvement in ${course}.</p>
+                    </div>`;
+
+                resultsDiv.innerHTML = resultsHTML;
+                resultsDiv.style.display = 'block';
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Assessment Complete';
+            });
+
+            resetBtn.addEventListener('click', () => {
+                // Reset all inputs
+                document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
+                document.querySelectorAll('.answer-input').forEach(input => input.value = '');
+                document.querySelectorAll('.feedback').forEach(feedback => feedback.style.display = 'none');
+
+                resultsDiv.style.display = 'none';
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-check"></i> Submit Assessment';
+            });
+        }, 100);
+
+        return quizHTML;
+    }
 </script>
 
 </body>
