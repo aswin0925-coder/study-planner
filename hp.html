@@ -27,6 +27,194 @@
             display: flex;
             justify-content: center;
             align-items: flex-start;
+            position: relative;
+        }
+        
+        /* Password Game Styles */
+        .password-game {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.98);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 300px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border: 2px solid #667eea;
+        }
+        
+        .game-close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #f8f9fa;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 16px;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+        
+        .game-close-btn:hover {
+            background: #e74c3c;
+            color: white;
+            transform: rotate(90deg);
+        }
+        
+        .password-game h3 {
+            margin: 0 0 15px 0;
+            color: #667eea;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .clue-section {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 3px solid #764ba2;
+        }
+        
+        .clue-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+        
+        .clue {
+            font-size: 0.85em;
+            color: #555;
+            line-height: 1.5;
+        }
+        
+        .guess-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 10px;
+            transition: border-color 0.3s;
+        }
+        
+        .guess-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .game-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .game-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-new {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #ddd;
+        }
+        
+        .btn-new:hover {
+            background: #e9ecef;
+        }
+        
+        .feedback {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            text-align: center;
+            font-size: 0.9em;
+            display: none;
+        }
+        
+        .feedback.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        
+        .feedback.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+        
+        .feedback.hint {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+            display: block;
+        }
+        
+        .stats {
+            font-size: 0.8em;
+            color: #666;
+            text-align: center;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .toggle-game {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 999;
+            transition: all 0.3s;
+        }
+        
+        .toggle-game:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(0,0,0,0.3);
+        }
+        
+        .password-game.hidden {
+            display: none;
         }
         .container {
             max-width: 900px;
@@ -284,6 +472,41 @@
     </style>
 </head>
 <body>
+    <!-- Password Guessing Game Toggle -->
+    <button class="toggle-game" onclick="togglePasswordGame()">
+        <i class="fas fa-lock"></i> Password Game
+    </button>
+    
+    <!-- Password Guessing Game -->
+    <div class="password-game hidden" id="passwordGame">
+        <button class="game-close-btn" onclick="togglePasswordGame()" title="Close game">
+            <i class="fas fa-times"></i>
+        </button>
+        <h3><i class="fas fa-key"></i> Password Challenge</h3>
+        
+        <div class="clue-section">
+            <div class="clue-title">🔍 Clues:</div>
+            <div class="clue" id="clues"></div>
+        </div>
+        
+        <input type="text" class="guess-input" id="guessInput" placeholder="Enter your guess..." />
+        
+        <div class="game-buttons">
+            <button class="game-btn btn-submit" onclick="checkGuess()">
+                <i class="fas fa-check"></i> Submit
+            </button>
+            <button class="game-btn btn-new" onclick="newPassword()">
+                <i class="fas fa-sync"></i> New
+            </button>
+        </div>
+        
+        <div class="feedback" id="feedback"></div>
+        
+        <div class="stats" id="stats">
+            Attempts: 0 | Score: 0
+        </div>
+    </div>
+    
     <div class="container">
         <h1><i class="fas fa-brain"></i> Study Planner</h1>
         <p class="subtitle">Powered by AI <i class="fas fa-robot"></i></p>
@@ -1809,10 +2032,157 @@
 
         return quizHTML;
     }
+    
+    // Password Guessing Game Logic
+    let currentPassword = '';
+    let attempts = 0;
+    let score = 0;
+    let passwordCategories = [
+        {
+            passwords: ['sunshine', 'rainbow', 'butterfly', 'moonlight', 'starlight'],
+            hints: (pw) => [
+                `Length: ${pw.length} characters`,
+                `Starts with: ${pw[0].toUpperCase()}`,
+                `Contains: ${pw.includes('i') ? 'the letter I' : pw.includes('a') ? 'the letter A' : 'the letter O'}`,
+                `Nature-related word`
+            ]
+        },
+        {
+            passwords: ['python', 'javascript', 'coding', 'program', 'software'],
+            hints: (pw) => [
+                `Length: ${pw.length} characters`,
+                `First letter: ${pw[0].toUpperCase()}`,
+                `Last letter: ${pw[pw.length-1].toUpperCase()}`,
+                `Programming-related term`
+            ]
+        },
+        {
+            passwords: ['ocean', 'mountain', 'forest', 'desert', 'river'],
+            hints: (pw) => [
+                `${pw.length} letters long`,
+                `Begins with: ${pw[0].toUpperCase()}`,
+                `Ends with: ${pw[pw.length-1].toUpperCase()}`,
+                `Geographic feature`
+            ]
+        },
+        {
+            passwords: ['galaxy', 'planet', 'comet', 'asteroid', 'nebula'],
+            hints: (pw) => [
+                `Word length: ${pw.length}`,
+                `First 2 letters: ${pw.substring(0,2).toUpperCase()}`,
+                `Contains the letter: ${pw.includes('e') ? 'E' : pw.includes('a') ? 'A' : 'O'}`,
+                `Space-related term`
+            ]
+        },
+        {
+            passwords: ['guitar', 'piano', 'violin', 'drums', 'trumpet'],
+            hints: (pw) => [
+                `${pw.length} characters`,
+                `Starts: ${pw[0].toUpperCase()}, Ends: ${pw[pw.length-1].toUpperCase()}`,
+                `Has ${pw.split('').filter(c => 'aeiou'.includes(c)).length} vowels`,
+                `Musical instrument`
+            ]
+        }
+    ];
+    
+    function togglePasswordGame() {
+        const game = document.getElementById('passwordGame');
+        game.classList.toggle('hidden');
+        if (!game.classList.contains('hidden') && !currentPassword) {
+            newPassword();
+        }
+    }
+    
+    function newPassword() {
+        const category = passwordCategories[Math.floor(Math.random() * passwordCategories.length)];
+        currentPassword = category.passwords[Math.floor(Math.random() * category.passwords.length)];
+        attempts = 0;
+        
+        const clues = category.hints(currentPassword);
+        document.getElementById('clues').innerHTML = clues.map((clue, i) => 
+            `<div style="margin: 4px 0;">• ${clue}</div>`
+        ).join('');
+        
+        document.getElementById('guessInput').value = '';
+        document.getElementById('feedback').className = 'feedback';
+        document.getElementById('feedback').textContent = '';
+        updateStats();
+    }
+    
+    function checkGuess() {
+        const guess = document.getElementById('guessInput').value.toLowerCase().trim();
+        const feedback = document.getElementById('feedback');
+        
+        if (!guess) {
+            feedback.className = 'feedback error';
+            feedback.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please enter a guess!';
+            return;
+        }
+        
+        attempts++;
+        
+        if (guess === currentPassword) {
+            const points = Math.max(10 - attempts, 1);
+            score += points;
+            feedback.className = 'feedback success';
+            feedback.innerHTML = `<i class="fas fa-trophy"></i> Correct! Password: "${currentPassword}" (+${points} points)`;
+            updateStats();
+            setTimeout(() => newPassword(), 2500);
+        } else {
+            feedback.className = 'feedback error';
+            const distance = getHintMessage(guess, currentPassword);
+            feedback.innerHTML = `<i class="fas fa-times-circle"></i> Wrong! ${distance}`;
+            
+            // Give extra hint after 3 attempts
+            if (attempts === 3) {
+                setTimeout(() => {
+                    feedback.className = 'feedback hint';
+                    feedback.innerHTML = `<i class="fas fa-lightbulb"></i> Hint: Middle letter is "${currentPassword[Math.floor(currentPassword.length/2)]}"`;
+                }, 1000);
+            }
+            
+            updateStats();
+        }
+    }
+    
+    function getHintMessage(guess, password) {
+        if (guess.length < password.length) {
+            return `Too short! Need ${password.length - guess.length} more letter(s).`;
+        } else if (guess.length > password.length) {
+            return `Too long! Remove ${guess.length - password.length} letter(s).`;
+        } else {
+            let matches = 0;
+            for (let i = 0; i < password.length; i++) {
+                if (guess[i] === password[i]) matches++;
+            }
+            if (matches > 0) {
+                return `${matches} letter(s) in correct position! 🎯`;
+            }
+            return `Try again!`;
+        }
+    }
+    
+    function updateStats() {
+        document.getElementById('stats').innerHTML = `
+            Attempts: ${attempts} | Score: ${score} <i class="fas fa-star" style="color: #ffd700;"></i>
+        `;
+    }
+    
+    // Allow Enter key to submit
+    document.addEventListener('DOMContentLoaded', function() {
+        const input = document.getElementById('guessInput');
+        if (input) {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkGuess();
+                }
+            });
+        }
+    });
 </script>
 
 </body>
 </html>
 
-
+-
 <!--this is a copyright product of Aswin Pandey-->
