@@ -4,93 +4,339 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Study Planner</title>
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Add Flatpickr CSS and JS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <!-- Add SortableJS for reordering -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .subject { margin-bottom: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; cursor: move; }
-        .subject input { margin-right: 10px; }
-        .required::after { content: " *"; color: red; }
-        .totals { font-weight: bold; margin-top: 10px; }
-        .warning { color: orange; }
-        .error { color: red; }
-        button { margin: 5px; padding: 5px 10px; }
-        #subjects-container { min-height: 50px; }
-        .typing { animation: blink 1s infinite; }
-        @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .container {
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            backdrop-filter: blur(10px);
+            margin: 20px 0;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        .section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+        }
+        h2 i {
+            margin-right: 10px;
+            color: #667eea;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            display: flex;
+            align-items: center;
+        }
+        label i {
+            margin-right: 8px;
+            color: #667eea;
+        }
+        .required::after {
+            content: " *";
+            color: #e74c3c;
+        }
+        input, select {
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .input-group {
+            display: flex;
+            gap: 15px;
+        }
+        .input-group input {
+            flex: 1;
+        }
+        button {
+            padding: 12px 25px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .btn-secondary {
+            background: linear-gradient(45deg, #95a5a6, #7f8c8d);
+        }
+        .btn-secondary:hover {
+            box-shadow: 0 5px 15px rgba(127, 140, 141, 0.3);
+        }
+        .subject {
+            background: white;
+            margin-bottom: 15px;
+            padding: 20px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            cursor: move;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+        .subject:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+        }
+        .subject.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+        .subject input {
+            flex: 1;
+            min-width: 150px;
+        }
+        .delete-subject {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+        .delete-subject:hover {
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+        #subjects-container {
+            min-height: 80px;
+            padding: 10px;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+        .totals {
+            font-weight: bold;
+            margin-top: 20px;
+            padding: 15px;
+            background: #d4edda;
+            border-radius: 8px;
+            color: #155724;
+        }
+        .warning {
+            color: #856404;
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error {
+            color: #721c24;
+            background: #f8d7da;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        #study-plan-output {
+            margin-top: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .typing {
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            .input-group {
+                flex-direction: column;
+            }
+            .subject {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>Study Planner</h1>
-    <p>This is powered by AI</p>
-    
-    <h2>Daily Activities (in hours)</h2>
-    <label for="sleep-start" class="required">Sleep Start Time:</label>
-    <input type="text" id="sleep-start" name="sleep-start" placeholder="Select sleep start time">
-    <br><br>
-    <label for="sleep" class="required">Sleep Hours:</label>
-    <input type="number" id="sleep" name="sleep" min="0" max="24" step="0.5" placeholder="e.g., 8">
-    <br><br>
-    <label for="wake-up">Wake Up Time:</label>
-    <span id="wake-up-display"></span>
-    <br><br>
-    <label for="eating" class="required">Eating:</label>
-    <input type="number" id="eating" name="eating" min="0" max="24" step="0.5" placeholder="e.g., 2">
-    <br><br>
-    <label for="other" class="required">Other daily activities (e.g., commuting, exercise):</label>
-    <input type="number" id="other" name="other" min="0" max="24" step="0.5" placeholder="e.g., 1">
-    <br><br>
-    
-    <h2>Meal Times</h2>
-    <label for="breakfast" class="required">Breakfast Time:</label>
-    <input type="text" id="breakfast" name="breakfast" placeholder="Select breakfast time">
-    <br><br>
-    <label for="lunch" class="required">Lunch Time:</label>
-    <input type="text" id="lunch" name="lunch" placeholder="Select lunch time">
-    <br><br>
-    <label for="dinner" class="required">Dinner Time:</label>
-    <input type="text" id="dinner" name="dinner" placeholder="Select dinner time">
-    <br><br>
-    <label for="snacks">Mid-break Snacks Time:</label>
-    <input type="text" id="snacks" name="snacks" placeholder="Select snacks time">
-    <br><br>
-    
-    <h2>Subjects (Drag to reorder)</h2>
-    <div id="subjects-container">
-        <div class="subject">
-            <label class="required">Subject Name:</label>
-            <input type="text" class="subject-name" placeholder="e.g., Math">
-            <label class="required">Strength (1-10):</label>
-            <input type="number" class="subject-strength" min="1" max="10" placeholder="1-10">
-            <label class="required">Target Marks (1-10):</label>
-            <input type="number" class="subject-marks" min="1" max="10" placeholder="1-10">
-            <button class="delete-subject">Delete</button>
+    <div class="container">
+        <h1><i class="fas fa-brain"></i> Study Planner</h1>
+        <p class="subtitle">Powered by AI <i class="fas fa-robot"></i></p>
+
+        <div class="section">
+            <h2><i class="fas fa-clock"></i> Daily Activities (in hours)</h2>
+            <div class="form-group">
+                <label for="sleep-start" class="required"><i class="fas fa-moon"></i> Sleep Start Time:</label>
+                <input type="text" id="sleep-start" name="sleep-start" placeholder="Select sleep start time">
+            </div>
+            <div class="form-group">
+                <label for="sleep" class="required"><i class="fas fa-bed"></i> Sleep Hours:</label>
+                <input type="number" id="sleep" name="sleep" min="0" max="24" step="0.5" placeholder="e.g., 8">
+            </div>
+            <div class="form-group">
+                <label for="wake-up"><i class="fas fa-sun"></i> Wake Up Time:</label>
+                <span id="wake-up-display"></span>
+            </div>
+            <div class="form-group">
+                <label for="eating" class="required"><i class="fas fa-utensils"></i> Eating:</label>
+                <input type="number" id="eating" name="eating" min="0" max="24" step="0.5" placeholder="e.g., 2">
+            </div>
+            <div class="form-group">
+                <label for="other" class="required"><i class="fas fa-running"></i> Other daily activities (e.g., commuting, exercise):</label>
+                <input type="number" id="other" name="other" min="0" max="24" step="0.5" placeholder="e.g., 1">
+            </div>
         </div>
+
+        <div class="section">
+            <h2><i class="fas fa-clock"></i> Meal Times</h2>
+            <div class="input-group">
+                <div class="form-group">
+                    <label for="breakfast" class="required"><i class="fas fa-coffee"></i> Breakfast Time:</label>
+                    <input type="text" id="breakfast" name="breakfast" placeholder="Select breakfast time">
+                </div>
+                <div class="form-group">
+                    <label for="lunch" class="required"><i class="fas fa-hamburger"></i> Lunch Time:</label>
+                    <input type="text" id="lunch" name="lunch" placeholder="Select lunch time">
+                </div>
+            </div>
+            <div class="input-group">
+                <div class="form-group">
+                    <label for="dinner" class="required"><i class="fas fa-pizza-slice"></i> Dinner Time:</label>
+                    <input type="text" id="dinner" name="dinner" placeholder="Select dinner time">
+                </div>
+                <div class="form-group">
+                    <label for="snacks"><i class="fas fa-cookie-bite"></i> Mid-break Snacks Time:</label>
+                    <input type="text" id="snacks" name="snacks" placeholder="Select snacks time">
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-book"></i> Subjects (Drag to reorder)</h2>
+            <div id="subjects-container">
+                <div class="subject">
+                    <label class="required"><i class="fas fa-graduation-cap"></i> Subject Name:</label>
+                    <input type="text" class="subject-name" placeholder="e.g., Math">
+                    <label class="required"><i class="fas fa-dumbbell"></i> Strength (1-10):</label>
+                    <input type="number" class="subject-strength" min="1" max="10" placeholder="1-10">
+                    <label class="required"><i class="fas fa-target"></i> Target Marks (1-10):</label>
+                    <input type="number" class="subject-marks" min="1" max="10" placeholder="1-10">
+                    <button class="delete-subject"><i class="fas fa-trash"></i> Delete</button>
+                </div>
+            </div>
+            <button id="add-subject"><i class="fas fa-plus"></i> Add Another Subject</button>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-calendar-alt"></i> Study Session</h2>
+            <div class="input-group">
+                <div class="form-group">
+                    <label for="start-datetime" class="required"><i class="fas fa-play"></i> Starting Date and Time:</label>
+                    <input type="text" id="start-datetime" name="start-datetime" placeholder="Select start date and time">
+                </div>
+                <div class="form-group">
+                    <label for="end-datetime" class="required"><i class="fas fa-stop"></i> Ending Date and Time:</label>
+                    <input type="text" id="end-datetime" name="end-datetime" placeholder="Select end date and time">
+                </div>
+            </div>
+            <div class="input-group">
+                <div class="form-group">
+                    <label for="study-interval"><i class="fas fa-hourglass-half"></i> Study Interval (minutes):</label>
+                    <input type="number" id="study-interval" name="study-interval" min="1" placeholder="25" value="25">
+                </div>
+                <div class="form-group">
+                    <label for="break-interval"><i class="fas fa-coffee"></i> Break Interval (minutes):</label>
+                    <input type="number" id="break-interval" name="break-interval" min="1" placeholder="5" value="5">
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button id="generate-plan"><i class="fas fa-magic"></i> Generate Study Plan</button>
+        </div>
+
+        <div id="study-plan-output" class="fade-in"></div>
     </div>
-    <button id="add-subject">Add Another Subject</button>
-    <br><br>
-    
-    <h2>Study Session</h2>
-    <label for="start-datetime" class="required">Starting Date and Time:</label>
-    <input type="text" id="start-datetime" name="start-datetime" placeholder="Select start date and time">
-    <br><br>
-    
-    <label for="end-datetime" class="required">Ending Date and Time:</label>
-    <input type="text" id="end-datetime" name="end-datetime" placeholder="Select end date and time">
-    <br><br>
-    
-    <label for="study-interval">Study Interval (minutes):</label>
-    <input type="number" id="study-interval" name="study-interval" min="1" placeholder="25" value="25">
-    <label for="break-interval">Break Interval (minutes):</label>
-    <input type="number" id="break-interval" name="break-interval" min="1" placeholder="5" value="5">
-    <br><br>
-    
-    <button id="generate-plan">Generate Study Plan</button>
-    <br><br>
-    <div id="study-plan-output"></div>
 
 <script>
     let startDate = null;
@@ -191,22 +437,28 @@
     // Make subjects sortable
     new Sortable(document.getElementById('subjects-container'), {
         animation: 150,
-        handle: '.subject'
+        handle: '.subject',
+        onStart: function(evt) {
+            evt.item.classList.add('dragging');
+        },
+        onEnd: function(evt) {
+            evt.item.classList.remove('dragging');
+        }
     });
 
     // Add subject functionality
     document.getElementById('add-subject').addEventListener('click', function() {
         const container = document.getElementById('subjects-container');
         const subjectDiv = document.createElement('div');
-        subjectDiv.className = 'subject';
+        subjectDiv.className = 'subject fade-in';
         subjectDiv.innerHTML = `
-            <label class="required">Subject Name:</label>
+            <label class="required"><i class="fas fa-graduation-cap"></i> Subject Name:</label>
             <input type="text" class="subject-name" placeholder="e.g., Math">
-            <label class="required">Strength (1-10):</label>
+            <label class="required"><i class="fas fa-dumbbell"></i> Strength (1-10):</label>
             <input type="number" class="subject-strength" min="1" max="10" placeholder="1-10">
-            <label class="required">Target Marks (1-10):</label>
+            <label class="required"><i class="fas fa-target"></i> Target Marks (1-10):</label>
             <input type="number" class="subject-marks" min="1" max="10" placeholder="1-10">
-            <button class="delete-subject">Delete</button>
+            <button class="delete-subject"><i class="fas fa-trash"></i> Delete</button>
         `;
         container.appendChild(subjectDiv);
     });
@@ -216,6 +468,43 @@
         if (e.target.classList.contains('delete-subject')) {
             e.target.parentElement.remove();
         }
+    });
+
+    // Real-time validation
+    function validateInputs() {
+        const sleep = parseFloat(document.getElementById('sleep').value) || 0;
+        const eating = parseFloat(document.getElementById('eating').value) || 0;
+        const other = parseFloat(document.getElementById('other').value) || 0;
+        const total = sleep + eating + other;
+
+        // Update visual feedback
+        const inputs = document.querySelectorAll('input[type="number"]');
+        inputs.forEach(input => {
+            if (input.value && parseFloat(input.value) > 24) {
+                input.style.borderColor = '#e74c3c';
+            } else {
+                input.style.borderColor = '#e1e8ed';
+            }
+        });
+
+        // Show warning if total exceeds 24 hours
+        const warningDiv = document.getElementById('total-warning');
+        if (total > 24) {
+            if (!warningDiv) {
+                const div = document.createElement('div');
+                div.id = 'total-warning';
+                div.className = 'warning';
+                div.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Total daily activities exceed 24 hours!';
+                document.querySelector('.section:first-child').appendChild(div);
+            }
+        } else if (warningDiv) {
+            warningDiv.remove();
+        }
+    }
+
+    // Add event listeners for real-time validation
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+        input.addEventListener('input', validateInputs);
     });
 
     document.getElementById('generate-plan').addEventListener('click', function() {
@@ -269,57 +558,85 @@
         const sessionMinutes = (endDate - startDate) / (1000 * 60);
 
         // Generate plan HTML
-        let planHTML = `<h2>Daily Study Allocation</h2>`;
-        planHTML += `<p>Available study time per day: ${availableStudyTime.toFixed(1)} hours</p>`;
+        let planHTML = `
+            <div class="section">
+                <h2><i class="fas fa-chart-pie"></i> Daily Study Allocation</h2>
+                <p style="font-size: 1.1em; margin-bottom: 20px;"><i class="fas fa-clock"></i> Available study time per day: <strong>${availableStudyTime.toFixed(1)} hours</strong></p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+        `;
         let totalAllocated = 0;
         subjects.forEach(sub => {
-            planHTML += `<p><strong>${sub.name}</strong>: ${sub.dailyTime.toFixed(1)} hours/day</p>`;
+            planHTML += `
+                <div style="background: linear-gradient(45deg, #667eea, #764ba2); color: white; padding: 15px; border-radius: 10px; text-align: center;">
+                    <i class="fas fa-book-open" style="font-size: 1.5em; margin-bottom: 10px;"></i>
+                    <h3 style="margin: 0; font-size: 1.2em;">${sub.name}</h3>
+                    <p style="margin: 5px 0 0 0; font-size: 1.1em;">${sub.dailyTime.toFixed(1)} hours/day</p>
+                </div>
+            `;
             totalAllocated += sub.dailyTime;
         });
-        planHTML += `<div class="totals">Total Allocated: ${totalAllocated.toFixed(1)} hours</div>`;
+        planHTML += `
+                </div>
+                <div class="totals" style="margin-top: 20px;">
+                    <i class="fas fa-calculator"></i> Total Allocated: ${totalAllocated.toFixed(1)} hours
+                </div>
+        `;
         if (Math.abs(totalAllocated - availableStudyTime) > 0.01) {
-            planHTML += `<div class="warning">Warning: Rounding may cause small gaps in schedule (difference: ${(availableStudyTime - totalAllocated).toFixed(2)} hours).</div>`;
+            planHTML += `<div class="warning"><i class="fas fa-exclamation-triangle"></i> Note: Small rounding differences may occur (difference: ${(availableStudyTime - totalAllocated).toFixed(2)} hours).</div>`;
         }
+        planHTML += `</div>`;
 
-        // Session plan: Round-robin allocation
-        planHTML += `<h2>Session Plan (${startDate.toISOString().slice(0, 16)} - ${endDate.toISOString().slice(0, 16)})</h2>`;
+        // Session plan
+        planHTML += `<div class="section"><h2><i class="fas fa-calendar-check"></i> Session Plan</h2>`;
+        planHTML += `<p style="font-size: 1.1em; margin-bottom: 20px;"><i class="fas fa-play-circle"></i> ${startDate.toISOString().slice(0, 16).replace('T', ' ')} - ${endDate.toISOString().slice(0, 16).replace('T', ' ')}</p>`;
         let currentTime = new Date(startDate);
         let subjectIndex = 0;
         let totalSessionTime = 0;
         let currentDay = null;
+        let dayCount = 0;
         while (currentTime < endDate && totalSessionTime < sessionMinutes) {
             const dayStr = currentTime.toDateString();
             if (dayStr !== currentDay) {
-                planHTML += `<h3>Module for ${dayStr}</h3>`;
+                if (currentDay) planHTML += `</div>`;
+                planHTML += `<div style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 10px;"><h3 style="margin-top: 0; color: #667eea;"><i class="fas fa-calendar-day"></i> ${dayStr}</h3>`;
                 currentDay = dayStr;
+                dayCount++;
             }
             const sub = subjects[subjectIndex % subjects.length];
             const subTime = (sub.dailyTime / availableStudyTime) * sessionMinutes;
             const intervalMinutes = Math.min(studyInterval, subTime - (totalSessionTime % subTime), sessionMinutes - totalSessionTime);
             if (intervalMinutes <= 0) break;
             const intervalEnd = new Date(currentTime.getTime() + intervalMinutes * 60000);
-            planHTML += `<p><strong>${sub.name} Study</strong>: ${currentTime.toISOString().slice(0, 16)} - ${intervalEnd.toISOString().slice(0, 16)}</p>`;
+            planHTML += `<p style="margin: 5px 0;"><strong><i class="fas fa-book"></i> ${sub.name} Study:</strong> ${currentTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - ${intervalEnd.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>`;
             currentTime = intervalEnd;
             totalSessionTime += intervalMinutes;
             // Add break if not the last interval and time allows
             if (totalSessionTime < sessionMinutes && currentTime < endDate) {
                 const breakEnd = new Date(currentTime.getTime() + breakInterval * 60000);
                 if (breakEnd <= endDate) {
-                    planHTML += `<p><em>Break</em>: ${currentTime.toISOString().slice(0, 16)} - ${breakEnd.toISOString().slice(0, 16)}</p>`;
+                    planHTML += `<p style="margin: 5px 0; color: #666;"><em><i class="fas fa-coffee"></i> Break:</em> ${currentTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - ${breakEnd.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>`;
                     currentTime = breakEnd;
                     totalSessionTime += breakInterval;
                 }
             }
             subjectIndex++;
         }
+        if (currentDay) planHTML += `</div>`;
+        planHTML += `</div>`;
         if (totalSessionTime < sessionMinutes) {
-            planHTML += `<div class="warning">Warning: Session ended early due to time constraints.</div>`;
+            planHTML += `<div class="warning"><i class="fas fa-exclamation-triangle"></i> Session completed within available time.</div>`;
         }
 
-        document.getElementById('study-plan-output').innerHTML = 'Chatbot is typing<span class="typing">...</span>';
+        document.getElementById('study-plan-output').innerHTML = `
+            <div style="text-align: center; padding: 40px;">
+                <i class="fas fa-cog fa-spin" style="font-size: 2em; color: #667eea;"></i>
+                <p style="margin-top: 20px; color: #666;">AI is generating your personalized study plan<span class="typing">...</span></p>
+            </div>
+        `;
         setTimeout(() => {
             document.getElementById('study-plan-output').innerHTML = planHTML;
-        }, 2000);
+            document.getElementById('study-plan-output').classList.add('fade-in');
+        }, 3000);
     });
 </script>
 
