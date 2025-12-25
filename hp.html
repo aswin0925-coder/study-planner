@@ -331,6 +331,18 @@
             </div>
         </div>
 
+        <div class="section">
+            <h2><i class="fas fa-search"></i> Quick Learning Resources</h2>
+            <div class="form-group">
+                <label for="learning-topic"><i class="fas fa-book"></i> What do you want to learn?</label>
+                <input type="text" id="learning-topic" placeholder="Enter a topic (e.g., Python programming, World War II, Algebra)">
+            </div>
+            <div style="text-align: center; margin-top: 15px;">
+                <button id="get-resources"><i class="fas fa-external-link-alt"></i> Get Learning Resources</button>
+            </div>
+            <div id="resources-output" class="fade-in" style="margin-top: 20px;"></div>
+        </div>
+
         <div style="text-align: center; margin: 30px 0;">
             <button id="generate-plan"><i class="fas fa-magic"></i> Generate Study Plan</button>
         </div>
@@ -637,6 +649,44 @@
             document.getElementById('study-plan-output').innerHTML = planHTML;
             document.getElementById('study-plan-output').classList.add('fade-in');
         }, 3000);
+    });
+
+    // Learning Resources functionality
+    document.getElementById('get-resources').addEventListener('click', function() {
+        const topic = document.getElementById('learning-topic').value.trim();
+        if (!topic) {
+            alert('Please enter a topic you want to learn about.');
+            return;
+        }
+
+        const resourcesOutput = document.getElementById('resources-output');
+        resourcesOutput.innerHTML = `
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; border-left: 4px solid #667eea;">
+                <h3 style="margin-top: 0; color: #333;"><i class="fas fa-link"></i> Learning Resources for "${topic}"</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 15px;">
+                    <a href="https://www.google.com/search?q=${encodeURIComponent(topic)}" target="_blank" style="display: inline-flex; align-items: center; padding: 12px 20px; background: #4285f4; color: white; text-decoration: none; border-radius: 8px; font-weight: 500; transition: all 0.3s ease;">
+                        <i class="fab fa-google" style="margin-right: 8px;"></i> Search Google
+                    </a>
+                    <a href="https://www.khanacademy.org/search?page_search_query=${encodeURIComponent(topic)}" target="_blank" style="display: inline-flex; align-items: center; padding: 12px 20px; background: #14b866; color: white; text-decoration: none; border-radius: 8px; font-weight: 500; transition: all 0.3s ease;">
+                        <i class="fas fa-graduation-cap" style="margin-right: 8px;"></i> Khan Academy
+                    </a>
+                    <a href="https://en.wikipedia.org/wiki/${encodeURIComponent(topic.replace(/\s+/g, '_'))}" target="_blank" style="display: inline-flex; align-items: center; padding: 12px 20px; background: #666; color: white; text-decoration: none; border-radius: 8px; font-weight: 500; transition: all 0.3s ease;">
+                        <i class="fab fa-wikipedia-w" style="margin-right: 8px;"></i> Wikipedia
+                    </a>
+                </div>
+                <p style="margin-top: 15px; margin-bottom: 0; color: #666; font-size: 14px;">
+                    <i class="fas fa-lightbulb"></i> Tip: Use these resources to research your topic before creating your study plan!
+                </p>
+            </div>
+        `;
+        resourcesOutput.classList.add('fade-in');
+    });
+
+    // Allow Enter key to trigger the resources button
+    document.getElementById('learning-topic').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            document.getElementById('get-resources').click();
+        }
     });
 </script>
 
