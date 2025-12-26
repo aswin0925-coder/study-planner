@@ -472,40 +472,19 @@
     </style>
 </head>
 <body>
-    <!-- Password Guessing Game Toggle -->
-    <button class="toggle-game" onclick="togglePasswordGame()">
-        <i class="fas fa-lock"></i> Password Game
-    </button>
-    
-    <!-- Password Guessing Game -->
-    <div class="password-game hidden" id="passwordGame">
-        <button class="game-close-btn" onclick="togglePasswordGame()" title="Close game">
-            <i class="fas fa-times"></i>
-        </button>
-        <h3><i class="fas fa-key"></i> Password Challenge</h3>
-        
-        <div class="clue-section">
-            <div class="clue-title">🔍 Clues:</div>
-            <div class="clue" id="clues"></div>
-        </div>
-        
-        <input type="text" class="guess-input" id="guessInput" placeholder="Enter your guess..." />
-        
-        <div class="game-buttons">
-            <button class="game-btn btn-submit" onclick="checkGuess()">
-                <i class="fas fa-check"></i> Submit
-            </button>
-            <button class="game-btn btn-new" onclick="newPassword()">
-                <i class="fas fa-sync"></i> New
-            </button>
-        </div>
-        
-        <div class="feedback" id="feedback"></div>
-        
-        <div class="stats" id="stats">
-            Attempts: 0 | Score: 0
-        </div>
-    </div>
+    <!-- Games Pop-up (center) -->
+    <style>
+        .games-section { margin: 0 20px 20px 20px; }
+        .game-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+        .game-card { background: rgba(255,255,255,0.95); border: 2px solid #e1e8ed; border-radius: 12px; padding: 16px; }
+        .game-card h3 { margin: 0 0 10px 0; color: #667eea; display: flex; align-items: center; gap: 8px; }
+        .game-controls { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+        .difficulty-select { border: 2px solid #e1e8ed; border-radius: 8px; padding: 6px 8px; }
+        .board-container { display: flex; flex-direction: column; gap: 8px; }
+
+    </style>
+
+
     
     <div class="container">
         <h1><i class="fas fa-brain"></i> Study Planner</h1>
@@ -2033,152 +2012,7 @@
         return quizHTML;
     }
     
-    // Password Guessing Game Logic
-    let currentPassword = '';
-    let attempts = 0;
-    let score = 0;
-    let passwordCategories = [
-        {
-            passwords: ['sunshine', 'rainbow', 'butterfly', 'moonlight', 'starlight'],
-            hints: (pw) => [
-                `Length: ${pw.length} characters`,
-                `Starts with: ${pw[0].toUpperCase()}`,
-                `Contains: ${pw.includes('i') ? 'the letter I' : pw.includes('a') ? 'the letter A' : 'the letter O'}`,
-                `Nature-related word`
-            ]
-        },
-        {
-            passwords: ['python', 'javascript', 'coding', 'program', 'software'],
-            hints: (pw) => [
-                `Length: ${pw.length} characters`,
-                `First letter: ${pw[0].toUpperCase()}`,
-                `Last letter: ${pw[pw.length-1].toUpperCase()}`,
-                `Programming-related term`
-            ]
-        },
-        {
-            passwords: ['ocean', 'mountain', 'forest', 'desert', 'river'],
-            hints: (pw) => [
-                `${pw.length} letters long`,
-                `Begins with: ${pw[0].toUpperCase()}`,
-                `Ends with: ${pw[pw.length-1].toUpperCase()}`,
-                `Geographic feature`
-            ]
-        },
-        {
-            passwords: ['galaxy', 'planet', 'comet', 'asteroid', 'nebula'],
-            hints: (pw) => [
-                `Word length: ${pw.length}`,
-                `First 2 letters: ${pw.substring(0,2).toUpperCase()}`,
-                `Contains the letter: ${pw.includes('e') ? 'E' : pw.includes('a') ? 'A' : 'O'}`,
-                `Space-related term`
-            ]
-        },
-        {
-            passwords: ['guitar', 'piano', 'violin', 'drums', 'trumpet'],
-            hints: (pw) => [
-                `${pw.length} characters`,
-                `Starts: ${pw[0].toUpperCase()}, Ends: ${pw[pw.length-1].toUpperCase()}`,
-                `Has ${pw.split('').filter(c => 'aeiou'.includes(c)).length} vowels`,
-                `Musical instrument`
-            ]
-        }
-    ];
-    
-    function togglePasswordGame() {
-        const game = document.getElementById('passwordGame');
-        game.classList.toggle('hidden');
-        if (!game.classList.contains('hidden') && !currentPassword) {
-            newPassword();
-        }
-    }
-    
-    function newPassword() {
-        const category = passwordCategories[Math.floor(Math.random() * passwordCategories.length)];
-        currentPassword = category.passwords[Math.floor(Math.random() * category.passwords.length)];
-        attempts = 0;
-        
-        const clues = category.hints(currentPassword);
-        document.getElementById('clues').innerHTML = clues.map((clue, i) => 
-            `<div style="margin: 4px 0;">• ${clue}</div>`
-        ).join('');
-        
-        document.getElementById('guessInput').value = '';
-        document.getElementById('feedback').className = 'feedback';
-        document.getElementById('feedback').textContent = '';
-        updateStats();
-    }
-    
-    function checkGuess() {
-        const guess = document.getElementById('guessInput').value.toLowerCase().trim();
-        const feedback = document.getElementById('feedback');
-        
-        if (!guess) {
-            feedback.className = 'feedback error';
-            feedback.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please enter a guess!';
-            return;
-        }
-        
-        attempts++;
-        
-        if (guess === currentPassword) {
-            const points = Math.max(10 - attempts, 1);
-            score += points;
-            feedback.className = 'feedback success';
-            feedback.innerHTML = `<i class="fas fa-trophy"></i> Correct! Password: "${currentPassword}" (+${points} points)`;
-            updateStats();
-            setTimeout(() => newPassword(), 2500);
-        } else {
-            feedback.className = 'feedback error';
-            const distance = getHintMessage(guess, currentPassword);
-            feedback.innerHTML = `<i class="fas fa-times-circle"></i> Wrong! ${distance}`;
-            
-            // Give extra hint after 3 attempts
-            if (attempts === 3) {
-                setTimeout(() => {
-                    feedback.className = 'feedback hint';
-                    feedback.innerHTML = `<i class="fas fa-lightbulb"></i> Hint: Middle letter is "${currentPassword[Math.floor(currentPassword.length/2)]}"`;
-                }, 1000);
-            }
-            
-            updateStats();
-        }
-    }
-    
-    function getHintMessage(guess, password) {
-        if (guess.length < password.length) {
-            return `Too short! Need ${password.length - guess.length} more letter(s).`;
-        } else if (guess.length > password.length) {
-            return `Too long! Remove ${guess.length - password.length} letter(s).`;
-        } else {
-            let matches = 0;
-            for (let i = 0; i < password.length; i++) {
-                if (guess[i] === password[i]) matches++;
-            }
-            if (matches > 0) {
-                return `${matches} letter(s) in correct position! 🎯`;
-            }
-            return `Try again!`;
-        }
-    }
-    
-    function updateStats() {
-        document.getElementById('stats').innerHTML = `
-            Attempts: ${attempts} | Score: ${score} <i class="fas fa-star" style="color: #ffd700;"></i>
-        `;
-    }
-    
-    // Allow Enter key to submit
-    document.addEventListener('DOMContentLoaded', function() {
-        const input = document.getElementById('guessInput');
-        if (input) {
-            input.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    checkGuess();
-                }
-            });
-        }
-    });
+
 </script>
 
 </body>
